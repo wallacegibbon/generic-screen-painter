@@ -24,7 +24,9 @@ void SSD1306_ScreenAdaptorESP32I2C_stop_transmit(
 void SSD1306_ScreenAdaptorESP32I2C_write_byte(
 	struct SSD1306_ScreenAdaptorESP32I2C *self, uint8_t data
 ) {
-	ESP_ERROR_CHECK(i2c_master_write_byte(self->cmd_handle, data, true));
+	ESP_ERROR_CHECK(i2c_master_write_byte(
+		self->cmd_handle, data, true
+	));
 }
 
 void SSD1306_ScreenAdaptorESP32I2C_initialize(

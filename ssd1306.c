@@ -52,17 +52,19 @@ void SSD1306_Screen_fix_32row(struct SSD1306_Screen *self) {
 	SSD1306_Screen_stop_transmit(self);
 }
 
-void SSD1306_Screen_set_up_down_invert(struct SSD1306_Screen *self) {
+void SSD1306_Screen_set_direction_1(struct SSD1306_Screen *self) {
 	SSD1306_Screen_start_transmit(self);
 	SSD1306_Screen_cmd_multi_byte_start(self);
-	if (self->direction) {
-		SSD1306_Screen_write_byte(self, 0xA0);
-		SSD1306_Screen_write_byte(self, 0xC0);
-	} else {
-		SSD1306_Screen_write_byte(self, 0xA1);
-		SSD1306_Screen_write_byte(self, 0xC8);
-	}
-	self->direction = !self->direction;
+	SSD1306_Screen_write_byte(self, 0xA0);
+	SSD1306_Screen_write_byte(self, 0xC0);
+	SSD1306_Screen_stop_transmit(self);
+}
+
+void SSD1306_Screen_set_direction_2(struct SSD1306_Screen *self) {
+	SSD1306_Screen_start_transmit(self);
+	SSD1306_Screen_cmd_multi_byte_start(self);
+	SSD1306_Screen_write_byte(self, 0xA1);
+	SSD1306_Screen_write_byte(self, 0xC8);
 	SSD1306_Screen_stop_transmit(self);
 }
 
@@ -197,25 +199,37 @@ void SSD1306_Screen_clear(struct SSD1306_Screen *self, int color) {
 }
 
 void SSD1306_Screen_prepare(struct SSD1306_Screen *self) {
+	if (self->direction)
+		SSD1306_Screen_set_direction_2(self);
+	else
+		SSD1306_Screen_set_direction_1(self);
+
+	/*
 	SSD1306_Screen_start_transmit(self);
 	SSD1306_Screen_cmd_multi_byte_start(self);
 
-	/// normal direction, can be changed by method `up_down_invert`
-	SSD1306_Screen_write_byte(self, 0xA0);
-	SSD1306_Screen_write_byte(self, 0xC0);
-
 	/// vertical shift, 0 ~ 63
-	//SSD1306_Screen_write_byte(self, 0xD3);
-	//SSD1306_Screen_write_byte(self, 0x20);
+	SSD1306_Screen_write_byte(self, 0xD3);
+	SSD1306_Screen_write_byte(self, 0x20);
 
 	/// Ratio/Oscillator & Clock Divide
-	//SSD1306_Screen_write_byte(self, 0xD5);
-	//SSD1306_Screen_write_byte(self, 0xF0);
+	SSD1306_Screen_write_byte(self, 0xD5);
+	SSD1306_Screen_write_byte(self, 0xF0);
 
-	//SSD1306_Screen_write_byte(self, 0xD9);
-	//SSD1306_Screen_write_byte(self, 0x22);
+	SSD1306_Screen_write_byte(self, 0xD9);
+	SSD1306_Screen_write_byte(self, 0x22);
 
 	SSD1306_Screen_stop_transmit(self);
+	*/
+}
+
+void SSD1306_Screen_set_up_down_invert(struct SSD1306_Screen *self) {
+	if (self->direction)
+		SSD1306_Screen_set_direction_1(self);
+	else
+		SSD1306_Screen_set_direction_2(self);
+
+	self->direction = !self->direction;
 }
 
 void SSD1306_Screen_initialize(
@@ -225,8 +239,8 @@ void SSD1306_Screen_initialize(
 	memset(self, 0, sizeof(struct SSD1306_Screen));
 	PainterInterface_initialize(&self->painter_interface);
 
-	self->painter_interface.draw_point =
-		(PainterDrawPoint) SSD1306_Screen_draw_point;
+	self->painter_interface.draw_point = (PainterDrawPoint)
+		SSD1306_Screen_draw_point;
 
 	self->painter_interface.size = (PainterSize) SSD1306_Screen_size;
 	self->painter_interface.clear = (PainterClear) SSD1306_Screen_clear;
