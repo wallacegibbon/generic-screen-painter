@@ -10,8 +10,8 @@ typedef void (*PainterSize)(void *screen, struct Point *p);
 typedef void (*PainterFlush)(void *screen);
 
 /// Screens who implement the Painter interface should put
-/// the PainterInterface at the start of the struct.
-struct PainterInterface {
+/// the DrawingBoardInterface at the start of the struct.
+struct DrawingBoardInterface {
 	/// methods that have to exist
 	PainterDrawPoint draw_point;
 	PainterSize size;
@@ -25,10 +25,10 @@ struct PainterInterface {
 };
 
 struct Painter {
-	struct PainterInterface *screen;
+	struct DrawingBoardInterface *screen;
 };
 
-void PainterInterface_initialize(struct PainterInterface *self);
+void DrawingBoardInterface_initialize(struct DrawingBoardInterface *self);
 
 /// Core functionalities
 void Painter_draw_point(struct Painter *self, struct Point p, int color);

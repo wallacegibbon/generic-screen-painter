@@ -3,11 +3,25 @@
 #include <stddef.h>
 #include <assert.h>
 
-typedef void *(*PainterInterfaceDefaultFallbackHandler)();
-void *PainterInterface_default_fallback_handler() { return NULL; }
+typedef void *(*DrawingBoardInterfaceFallbackHandler)();
+void *DrawingBoardInterface_fallback_handler() { return NULL; }
+
+/// The place-holder for interface methods
+void DrawingBoardInterface_initialize_0(struct DrawingBoardInterface *self) {
+	DrawingBoardInterfaceFallbackHandler *fp;
+	int size;
+
+	fp = (DrawingBoardInterfaceFallbackHandler *) self;
+	size = sizeof(struct DrawingBoardInterface) / sizeof(*fp);
+	while (size--)
+		*fp++ = DrawingBoardInterface_fallback_handler;
+}
 
 void Painter_fill_fallback(
-	struct PainterInterface *screen, struct Point p1, struct Point p2, int color
+	struct DrawingBoardInterface *screen,
+	struct Point p1,
+	struct Point p2,
+	int color
 ) {
 	struct RectPointIterator point_iterator;
 	struct Point p;
@@ -18,7 +32,7 @@ void Painter_fill_fallback(
 		screen->draw_point(screen, p, color);
 }
 
-void Painter_clear_fallback(struct PainterInterface *screen, int color) {
+void Painter_clear_fallback(struct DrawingBoardInterface *screen, int color) {
 	struct Point p1, p2;
 
 	Point_initialize(&p1, 0, 0);
@@ -26,19 +40,8 @@ void Painter_clear_fallback(struct PainterInterface *screen, int color) {
 	Painter_fill_fallback(screen, p1, p2, color);
 }
 
-/// The place-holder for interface methods
-void PainterInterface_initialize_zero(struct PainterInterface *self) {
-	PainterInterfaceDefaultFallbackHandler *fp;
-	int size;
-
-	fp = (PainterInterfaceDefaultFallbackHandler *) self;
-	size = sizeof(struct PainterInterface) / sizeof(*fp);
-	while (size--)
-		*fp++ = PainterInterface_default_fallback_handler;
-}
-
-void PainterInterface_initialize(struct PainterInterface *self) {
-	PainterInterface_initialize_zero(self);
+void DrawingBoardInterface_initialize(struct DrawingBoardInterface *self) {
+	DrawingBoardInterface_initialize_0(self);
 	self->clear = (PainterClear) Painter_clear_fallback;
 	self->fill = (PainterFill) Painter_fill_fallback;
 }

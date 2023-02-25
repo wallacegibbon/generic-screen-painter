@@ -16,7 +16,7 @@ struct ST7735_ScreenAdaptorInterface {
 };
 
 struct ST7735_Screen {
-	struct PainterInterface painter_interface;
+	struct DrawingBoardInterface drawing_board;
 	struct ST7735_ScreenAdaptorInterface *adaptor;
 	struct Point size;
 };

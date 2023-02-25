@@ -15,7 +15,7 @@ struct SSD1306_ScreenAdaptorInterface {
 };
 
 struct SSD1306_Screen {
-	struct PainterInterface painter_interface;
+	struct DrawingBoardInterface drawing_board;
 	struct SSD1306_ScreenAdaptorInterface *adaptor;
 	struct Point size;
 	/// just to hold some value since we don't have closure in C.

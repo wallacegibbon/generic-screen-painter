@@ -237,14 +237,14 @@ void SSD1306_Screen_initialize(
 	struct SSD1306_ScreenAdaptorInterface *adaptor
 ) {
 	memset(self, 0, sizeof(struct SSD1306_Screen));
-	PainterInterface_initialize(&self->painter_interface);
+	DrawingBoardInterface_initialize(&self->drawing_board);
 
-	self->painter_interface.draw_point = (PainterDrawPoint)
+	self->drawing_board.draw_point = (PainterDrawPoint)
 		SSD1306_Screen_draw_point;
 
-	self->painter_interface.size = (PainterSize) SSD1306_Screen_size;
-	self->painter_interface.clear = (PainterClear) SSD1306_Screen_clear;
-	self->painter_interface.flush = (PainterFlush) SSD1306_Screen_flush;
+	self->drawing_board.size = (PainterSize) SSD1306_Screen_size;
+	self->drawing_board.clear = (PainterClear) SSD1306_Screen_clear;
+	self->drawing_board.flush = (PainterFlush) SSD1306_Screen_flush;
 
 	self->adaptor = adaptor;
 

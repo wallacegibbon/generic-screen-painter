@@ -172,13 +172,13 @@ void ST7735_Screen_initialize(
 	struct ST7735_ScreenAdaptorInterface *adaptor
 ) {
 	memset(self, 0, sizeof(struct ST7735_Screen));
-	PainterInterface_initialize(&self->painter_interface);
+	DrawingBoardInterface_initialize(&self->drawing_board);
 
-	self->painter_interface.draw_point = (PainterDrawPoint)
+	self->drawing_board.draw_point = (PainterDrawPoint)
 		ST7735_Screen_draw_point;
 
-	self->painter_interface.size = (PainterSize) ST7735_Screen_size;
-	self->painter_interface.fill = (PainterFill) ST7735_Screen_fill;
+	self->drawing_board.size = (PainterSize) ST7735_Screen_size;
+	self->drawing_board.fill = (PainterFill) ST7735_Screen_fill;
 
 	self->adaptor = adaptor;
 
