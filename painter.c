@@ -17,7 +17,7 @@ void DrawingBoardInterface_initialize_0(struct DrawingBoardInterface *self) {
 		*fp++ = DrawingBoardInterface_fallback_handler;
 }
 
-void Painter_fill_fallback(
+void DrawingBoard_fill_fallback(
 	struct DrawingBoardInterface *screen,
 	struct Point p1,
 	struct Point p2,
@@ -32,18 +32,21 @@ void Painter_fill_fallback(
 		screen->draw_point(screen, p, color);
 }
 
-void Painter_clear_fallback(struct DrawingBoardInterface *screen, int color) {
+void DrawingBoard_clear_fallback(
+	struct DrawingBoardInterface *screen,
+	int color
+) {
 	struct Point p1, p2;
 
 	Point_initialize(&p1, 0, 0);
 	screen->size(screen, &p2);
-	Painter_fill_fallback(screen, p1, p2, color);
+	DrawingBoard_fill_fallback(screen, p1, p2, color);
 }
 
 void DrawingBoardInterface_initialize(struct DrawingBoardInterface *self) {
 	DrawingBoardInterface_initialize_0(self);
-	self->clear = (PainterClear) Painter_clear_fallback;
-	self->fill = (PainterFill) Painter_fill_fallback;
+	self->clear = (DrawingBoardClear) DrawingBoard_clear_fallback;
+	self->fill = (DrawingBoardFill) DrawingBoard_fill_fallback;
 }
 
 void Painter_draw_point(struct Painter *self, struct Point p, int color) {

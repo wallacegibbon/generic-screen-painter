@@ -3,25 +3,25 @@
 
 #include "common.h"
 
-typedef void (*PainterDrawPoint)(void *screen, struct Point p, int color);
-typedef void (*PainterFill)(void *screen, struct Point p1, struct Point p2, int color);
-typedef void (*PainterClear)(void *screen, int color);
-typedef void (*PainterSize)(void *screen, struct Point *p);
-typedef void (*PainterFlush)(void *screen);
+typedef void (*DrawingBoardDrawPoint)(void *screen, struct Point p, int color);
+typedef void (*DrawingBoardFill)(void *screen, struct Point p1, struct Point p2, int color);
+typedef void (*DrawingBoardClear)(void *screen, int color);
+typedef void (*DrawingBoardSize)(void *screen, struct Point *p);
+typedef void (*DrawingBoardFlush)(void *screen);
 
 /// Screens who implement the Painter interface should put
 /// the DrawingBoardInterface at the start of the struct.
 struct DrawingBoardInterface {
 	/// methods that have to exist
-	PainterDrawPoint draw_point;
-	PainterSize size;
+	DrawingBoardDrawPoint draw_point;
+	DrawingBoardSize size;
 
 	/// methods with default implementation
-	PainterClear clear;
-	PainterFill fill;
+	DrawingBoardClear clear;
+	DrawingBoardFill fill;
 
 	/// methods that is optional
-	PainterFlush flush;
+	DrawingBoardFlush flush;
 };
 
 struct Painter {
