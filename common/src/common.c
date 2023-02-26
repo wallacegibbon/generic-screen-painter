@@ -6,7 +6,7 @@ __attribute__((weak)) void delay(int milliseconds) {
 	static int counter = 0;
 	int i = 0, j;
 
-	while (i++ < milliseconds);
+	while (i++ < milliseconds)
 		for (j = 0; j < 10000; j++);
 
 	counter++;
