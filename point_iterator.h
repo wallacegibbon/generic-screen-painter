@@ -37,8 +37,6 @@ int RectPointIterator_next(
 	struct Point *result
 );
 
-void RectPointIterator_describe(struct RectPointIterator *self);
-
 void LinePointIterator_initialize(
 	struct LinePointIterator *self,
 	struct Point p1,

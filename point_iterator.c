@@ -12,7 +12,7 @@ void RectPointIterator_initialize(
 int RectPointIterator_next(
 	struct RectPointIterator *self, struct Point *result
 ) {
-	//printf("next rect point {%d,%d}\n", self->cursor.x, self->cursor.y);
+	//printf("rect point {%d,%d}\r\n", self->cursor.x, self->cursor.y);
 	*result = self->cursor;
 	self->cursor.x++;
 	if (self->cursor.x > self->p2.x + 1) {
@@ -21,18 +21,6 @@ int RectPointIterator_next(
 		self->cursor.y++;
 	}
 	return 1;
-}
-
-void RectPointIterator_describe(struct RectPointIterator *self) {
-	printf(
-		"RectPointIterator: p1{%d,%d} p2{%d,%d} cursor{%d,%d}\n",
-		self->p1.x,
-		self->p1.y,
-		self->p2.x,
-		self->p2.y,
-		self->cursor.x,
-		self->cursor.y
-	);
 }
 
 void LinePointIterator_initialize(
@@ -55,7 +43,7 @@ void LinePointIterator_initialize(
 int LinePointIterator_next(
 	struct LinePointIterator *self, struct Point *result
 ) {
-	//printf("next line point {%d,%d}\n", self->cursor.x, self->cursor.y);
+	//printf("line point {%d,%d}\r\n", self->cursor.x, self->cursor.y);
 	*result = self->cursor;
 	self->acc.x += self->delta.x;
 	if (self->acc.x >= self->distance) {
