@@ -50,7 +50,7 @@ void SSD1306_ScreenAdaptorCH32V103I2C_initialize(
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-	I2C_InitTSturcture.I2C_ClockSpeed = 80000;
+	I2C_InitTSturcture.I2C_ClockSpeed = 400000;
 	I2C_InitTSturcture.I2C_Mode = I2C_Mode_I2C;
 	I2C_InitTSturcture.I2C_DutyCycle = I2C_DutyCycle_16_9;
 	I2C_InitTSturcture.I2C_OwnAddress1 = 0x11;
@@ -59,7 +59,8 @@ void SSD1306_ScreenAdaptorCH32V103I2C_initialize(
 	I2C_Init(I2C1, &I2C_InitTSturcture);
 
 	I2C_Cmd(I2C1, ENABLE);
-	I2C_AcknowledgeConfig(I2C1, ENABLE);
+
+	//I2C_AcknowledgeConfig(I2C1, ENABLE);
 
 	self->adaptor.start_transmit = (SSD1306_ScreenAdaptorStartTransmit)
 		SSD1306_ScreenAdaptorCH32V103I2C_start_transmit;
