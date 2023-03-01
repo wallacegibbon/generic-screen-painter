@@ -1,11 +1,11 @@
-#include "ssd1306_ch32v103_i2c.h"
-#include "ch32v10x_i2c.h"
+#include "ssd1306_stm32f10x_i2c.h"
+#include "stm32f10x_i2c.h"
 #include "common.h"
 
 /// This driver use I2C1 on PB8(SCL) and PB9(SDA)
 
-void SSD1306_ScreenAdaptorCH32V103I2C_start_transmit(
-	struct SSD1306_ScreenAdaptorCH32V103I2C *self
+void SSD1306_ScreenAdaptorSTM32F10xI2C_start_transmit(
+	struct SSD1306_ScreenAdaptorSTM32F10xI2C *self
 ) {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY) != RESET);
 	I2C_GenerateSTART(I2C1, ENABLE);
@@ -16,22 +16,22 @@ void SSD1306_ScreenAdaptorCH32V103I2C_start_transmit(
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
 }
 
-void SSD1306_ScreenAdaptorCH32V103I2C_stop_transmit(
-	struct SSD1306_ScreenAdaptorCH32V103I2C *self
+void SSD1306_ScreenAdaptorSTM32F10xI2C_stop_transmit(
+	struct SSD1306_ScreenAdaptorSTM32F10xI2C *self
 ) {
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
 	I2C_GenerateSTOP(I2C1, ENABLE);
 }
 
-void SSD1306_ScreenAdaptorCH32V103I2C_write_byte(
-	struct SSD1306_ScreenAdaptorCH32V103I2C *self, uint8_t data
+void SSD1306_ScreenAdaptorSTM32F10xI2C_write_byte(
+	struct SSD1306_ScreenAdaptorSTM32F10xI2C *self, uint8_t data
 ) {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_TXE) == RESET);
 	I2C_SendData(I2C1, data);
 }
 
-void SSD1306_ScreenAdaptorCH32V103I2C_initialize(
-	struct SSD1306_ScreenAdaptorCH32V103I2C *self, int address
+void SSD1306_ScreenAdaptorSTM32F10xI2C_initialize(
+	struct SSD1306_ScreenAdaptorSTM32F10xI2C *self, int address
 ) {
 	GPIO_InitTypeDef GPIO_InitStructure = { 0 };
 	I2C_InitTypeDef I2C_InitTSturcture = { 0 };
@@ -63,13 +63,13 @@ void SSD1306_ScreenAdaptorCH32V103I2C_initialize(
 	//I2C_AcknowledgeConfig(I2C1, ENABLE);
 
 	self->adaptor.start_transmit = (SSD1306_ScreenAdaptorStartTransmit)
-		SSD1306_ScreenAdaptorCH32V103I2C_start_transmit;
+		SSD1306_ScreenAdaptorSTM32F10xI2C_start_transmit;
 
 	self->adaptor.stop_transmit = (SSD1306_ScreenAdaptorStopTransmit)
-		SSD1306_ScreenAdaptorCH32V103I2C_stop_transmit;
+		SSD1306_ScreenAdaptorSTM32F10xI2C_stop_transmit;
 
 	self->adaptor.write_byte = (SSD1306_ScreenAdaptorWriteByte)
-		SSD1306_ScreenAdaptorCH32V103I2C_write_byte;
+		SSD1306_ScreenAdaptorSTM32F10xI2C_write_byte;
 
 	self->address = address << 1;
 }
