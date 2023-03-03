@@ -31,15 +31,29 @@ struct Painter {
 void DrawingBoardInterface_initialize(struct DrawingBoardInterface *self);
 
 /// Core functionalities
-void Painter_draw_point(struct Painter *self, struct Point p, int color);
-void Painter_size(struct Painter *self, struct Point *p);
+static inline void Painter_draw_point(
+	struct Painter *self, struct Point p, int color
+) {
+	self->screen->draw_point(self->screen, p, color);
+}
 
-void Painter_fill(
+static inline void Painter_size(struct Painter *self, struct Point *p) {
+	self->screen->size(self->screen, p);
+}
+
+static inline void Painter_fill(
 	struct Painter *self, struct Point p1, struct Point p2, int color
-);
+) {
+	self->screen->fill(self->screen, p1, p2, color);
+}
 
-void Painter_clear(struct Painter *self, int color);
-void Painter_flush(struct Painter *self);
+static inline void Painter_clear(struct Painter *self, int color) {
+	self->screen->clear(self->screen, color);
+}
+
+static inline void Painter_flush(struct Painter *self) {
+	self->screen->flush(self->screen);
+}
 
 /// Draw methods
 void Painter_draw_line(

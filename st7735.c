@@ -4,15 +4,21 @@
 #include <stddef.h>
 #include <string.h>
 
-void ST7735_Screen_write_data_16(struct ST7735_Screen *self, uint16_t data) {
+static inline void ST7735_Screen_write_data_16(
+	struct ST7735_Screen *self, uint16_t data
+) {
 	self->adaptor->write_data_16(self->adaptor, data);
 }
 
-void ST7735_Screen_write_data(struct ST7735_Screen *self, uint8_t data) {
+static inline void ST7735_Screen_write_data(
+	struct ST7735_Screen *self, uint8_t data
+) {
 	self->adaptor->write_data(self->adaptor, data);
 }
 
-void ST7735_Screen_write_cmd(struct ST7735_Screen *self, uint8_t data) {
+static inline void ST7735_Screen_write_cmd(
+	struct ST7735_Screen *self, uint8_t data
+) {
 	self->adaptor->write_cmd(self->adaptor, data);
 }
 
@@ -58,7 +64,7 @@ void ST7735_Screen_fill(
 	RectPointIterator_initialize(&point_iterator, p1, p2);
 	ST7735_Screen_set_address(self, p1, p2);
 
-	while (RectPointIterator_next(&point_iterator, &p))
+	while (PointIterator_next(&point_iterator, &p))
 		ST7735_Screen_write_data_16(self, (uint16_t) color);
 }
 

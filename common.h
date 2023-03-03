@@ -3,7 +3,7 @@
 
 struct Point { int x, y; };
 
-inline void Point_initialize(struct Point *self, int x, int y) {
+static inline void Point_initialize(struct Point *self, int x, int y) {
 	self->x = x;
 	self->y = y;
 }

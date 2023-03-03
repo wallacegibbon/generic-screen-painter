@@ -6,15 +6,17 @@
 #define SSD1306_CTRL_WRITE_DATA_SINGLE 0xC0
 #define SSD1306_CTRL_WRITE_DATA_MULTI 0x40
 
-void SSD1306_Screen_start_transmit(struct SSD1306_Screen *self) {
+static inline void SSD1306_Screen_start_transmit(struct SSD1306_Screen *self) {
 	self->adaptor->start_transmit(self->adaptor);
 }
 
-void SSD1306_Screen_stop_transmit(struct SSD1306_Screen *self) {
+static inline void SSD1306_Screen_stop_transmit(struct SSD1306_Screen *self) {
 	self->adaptor->stop_transmit(self->adaptor);
 }
 
-void SSD1306_Screen_write_byte(struct SSD1306_Screen *self, uint8_t data) {
+static inline void SSD1306_Screen_write_byte(
+	struct SSD1306_Screen *self, uint8_t data
+) {
 	self->adaptor->write_byte(self->adaptor, data);
 }
 
