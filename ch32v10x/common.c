@@ -1,6 +1,6 @@
 #include "common.h"
-#include "debug.h"
+#include "core_systick.h"
 
 void delay(int milliseconds) {
-	Delay_Ms(milliseconds);
+	delay_ms(milliseconds);
 }
