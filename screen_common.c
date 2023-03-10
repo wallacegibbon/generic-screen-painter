@@ -1,4 +1,4 @@
-#include "common.h"
+#include "screen_common.h"
 
 /// This function should be override. The library can not implement a delay
 /// without knowing the speed of the target machine.

@@ -1,6 +1,6 @@
 #include "ssd1306_stm32f10x_i2c.h"
 #include "stm32f10x_i2c.h"
-#include "common.h"
+#include "screen_common.h"
 
 /// This driver use I2C1 on PB8(SCL) and PB9(SDA)
 

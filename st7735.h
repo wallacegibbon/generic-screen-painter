@@ -1,8 +1,8 @@
 #ifndef __ST7735_H
 #define __ST7735_H
 
-#include "painter.h"
-#include "common.h"
+#include "screen_painter.h"
+#include "screen_common.h"
 #include <stdint.h>
 
 typedef void (*ST7735_ScreenAdaptorWriteData16)(void *adaptor, uint16_t data);

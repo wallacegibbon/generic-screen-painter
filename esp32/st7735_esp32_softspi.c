@@ -1,5 +1,5 @@
 #include "st7735_esp32_softspi.h"
-#include "common.h"
+#include "screen_common.h"
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
 

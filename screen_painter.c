@@ -1,4 +1,4 @@
-#include "painter.h"
+#include "screen_painter.h"
 #include "point_iterator.h"
 #include <stddef.h>
 #include <assert.h>

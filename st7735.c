@@ -1,5 +1,4 @@
 #include "st7735.h"
-#include "common.h"
 #include "point_iterator.h"
 #include <stddef.h>
 #include <string.h>

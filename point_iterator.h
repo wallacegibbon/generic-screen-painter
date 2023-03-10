@@ -1,7 +1,7 @@
 #ifndef __POINT_ITERATOR_H
 #define __POINT_ITERATOR_H
 
-#include "common.h"
+#include "screen_common.h"
 
 typedef int (*PointIteratorNext)(void *iterator, struct Point *result);
 

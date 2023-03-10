@@ -1,5 +1,5 @@
-#ifndef __COMMON_H
-#define __COMMON_H
+#ifndef __SCREEN_COMMON_H
+#define __SCREEN_COMMON_H
 
 struct Point { int x, y; };
 
