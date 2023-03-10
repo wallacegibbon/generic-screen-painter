@@ -16,14 +16,14 @@ struct ST7735_ScreenAdaptorInterface {
 };
 
 struct ST7735_Screen {
-	struct DrawingBoardInterface drawing_board;
-	struct ST7735_ScreenAdaptorInterface *adaptor;
+	const struct DrawingBoardInterface *drawing_board;
+	struct ST7735_ScreenAdaptorInterface **adaptor;
 	struct Point size;
 };
 
 void ST7735_Screen_initialize(
 	struct ST7735_Screen *self,
-	struct ST7735_ScreenAdaptorInterface *adaptor
+	struct ST7735_ScreenAdaptorInterface **adaptor
 );
 
 #endif

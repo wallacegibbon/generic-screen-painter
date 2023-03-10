@@ -6,7 +6,7 @@
 #include "driver/gpio.h"
 
 struct SSD1306_ScreenAdaptorESP32I2C {
-	struct SSD1306_ScreenAdaptorInterface adaptor;
+	const struct SSD1306_ScreenAdaptorInterface *adaptor;
 	i2c_cmd_handle_t cmd_handle;
 	i2c_port_t i2c_num;
 	uint8_t address;

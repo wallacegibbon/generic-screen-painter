@@ -4,7 +4,7 @@
 #include "st7735.h"
 
 struct ST7735_ScreenAdaptorESP32SoftSPI {
-	struct ST7735_ScreenAdaptorInterface adaptor;
+	const struct ST7735_ScreenAdaptorInterface *adaptor;
 	uint8_t mosi_pin;
 	uint8_t sclk_pin;
 	uint8_t cs_pin;

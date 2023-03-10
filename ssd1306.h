@@ -15,8 +15,8 @@ struct SSD1306_ScreenAdaptorInterface {
 };
 
 struct SSD1306_Screen {
-	struct DrawingBoardInterface drawing_board;
-	struct SSD1306_ScreenAdaptorInterface *adaptor;
+	const struct DrawingBoardInterface *drawing_board;
+	struct SSD1306_ScreenAdaptorInterface **adaptor;
 	struct Point size;
 	/// just to hold some value since we don't have closure in C.
 	int clear_color;
@@ -29,7 +29,7 @@ struct SSD1306_Screen {
 
 void SSD1306_Screen_initialize(
 	struct SSD1306_Screen *self,
-	struct SSD1306_ScreenAdaptorInterface *adaptor
+	struct SSD1306_ScreenAdaptorInterface **adaptor
 );
 
 /// SSD1306 specific interfaces

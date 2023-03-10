@@ -4,7 +4,7 @@
 #include "ssd1306.h"
 
 struct SSD1306_ScreenAdaptorSTM32F10xI2C {
-	struct SSD1306_ScreenAdaptorInterface adaptor;
+	const struct SSD1306_ScreenAdaptorInterface *adaptor;
 	uint8_t address;
 };
 

@@ -3,22 +3,33 @@
 #include <stddef.h>
 #include <string.h>
 
+void ST7735_Screen_draw_point(struct ST7735_Screen *self, struct Point p, int color);
+void ST7735_Screen_size(struct ST7735_Screen *self, struct Point *p);
+void ST7735_Screen_fill(struct ST7735_Screen *self, struct Point p1, struct Point p2, int color
+);
+
+static const struct DrawingBoardInterface drawing_board_vtable = {
+	.draw_point = (DrawingBoardDrawPoint) ST7735_Screen_draw_point,
+	.size = (DrawingBoardSize) ST7735_Screen_size,
+	.fill = (DrawingBoardFill) ST7735_Screen_fill
+};
+
 static inline void ST7735_Screen_write_data_16(
 	struct ST7735_Screen *self, uint16_t data
 ) {
-	self->adaptor->write_data_16(self->adaptor, data);
+	(*self->adaptor)->write_data_16(self->adaptor, data);
 }
 
 static inline void ST7735_Screen_write_data(
 	struct ST7735_Screen *self, uint8_t data
 ) {
-	self->adaptor->write_data(self->adaptor, data);
+	(*self->adaptor)->write_data(self->adaptor, data);
 }
 
 static inline void ST7735_Screen_write_cmd(
 	struct ST7735_Screen *self, uint8_t data
 ) {
-	self->adaptor->write_cmd(self->adaptor, data);
+	(*self->adaptor)->write_cmd(self->adaptor, data);
 }
 
 void ST7735_Screen_set_address(
@@ -174,17 +185,11 @@ void ST7735_Screen_prepare(struct ST7735_Screen *self) {
 
 void ST7735_Screen_initialize(
 	struct ST7735_Screen *self,
-	struct ST7735_ScreenAdaptorInterface *adaptor
+	struct ST7735_ScreenAdaptorInterface **adaptor
 ) {
 	memset(self, 0, sizeof(struct ST7735_Screen));
-	DrawingBoardInterface_initialize(&self->drawing_board);
 
-	self->drawing_board.draw_point = (DrawingBoardDrawPoint)
-		ST7735_Screen_draw_point;
-
-	self->drawing_board.size = (DrawingBoardSize) ST7735_Screen_size;
-	self->drawing_board.fill = (DrawingBoardFill) ST7735_Screen_fill;
-
+	self->drawing_board = &drawing_board_vtable;
 	self->adaptor = adaptor;
 
 	self->size.x = 160;

@@ -6,18 +6,30 @@
 #define SSD1306_CTRL_WRITE_DATA_SINGLE 0xC0
 #define SSD1306_CTRL_WRITE_DATA_MULTI 0x40
 
+void SSD1306_Screen_draw_point(struct SSD1306_Screen *self, struct Point p, int color);
+void SSD1306_Screen_size(struct SSD1306_Screen *self, struct Point *p);
+void SSD1306_Screen_clear(struct SSD1306_Screen *self, int color);
+void SSD1306_Screen_flush(struct SSD1306_Screen *self);
+
+static const struct DrawingBoardInterface drawing_board_vtable = {
+	.draw_point = (DrawingBoardDrawPoint) SSD1306_Screen_draw_point,
+	.size = (DrawingBoardSize) SSD1306_Screen_size,
+	.clear = (DrawingBoardClear) SSD1306_Screen_clear,
+	.flush = (DrawingBoardFlush) SSD1306_Screen_flush
+};
+
 static inline void SSD1306_Screen_start_transmit(struct SSD1306_Screen *self) {
-	self->adaptor->start_transmit(self->adaptor);
+	(*self->adaptor)->start_transmit(self->adaptor);
 }
 
 static inline void SSD1306_Screen_stop_transmit(struct SSD1306_Screen *self) {
-	self->adaptor->stop_transmit(self->adaptor);
+	(*self->adaptor)->stop_transmit(self->adaptor);
 }
 
 static inline void SSD1306_Screen_write_byte(
 	struct SSD1306_Screen *self, uint8_t data
 ) {
-	self->adaptor->write_byte(self->adaptor, data);
+	(*self->adaptor)->write_byte(self->adaptor, data);
 }
 
 void SSD1306_Screen_data_single_byte(
@@ -236,18 +248,11 @@ void SSD1306_Screen_set_up_down_invert(struct SSD1306_Screen *self) {
 
 void SSD1306_Screen_initialize(
 	struct SSD1306_Screen *self,
-	struct SSD1306_ScreenAdaptorInterface *adaptor
+	struct SSD1306_ScreenAdaptorInterface **adaptor
 ) {
 	memset(self, 0, sizeof(struct SSD1306_Screen));
-	DrawingBoardInterface_initialize(&self->drawing_board);
 
-	self->drawing_board.draw_point = (DrawingBoardDrawPoint)
-		SSD1306_Screen_draw_point;
-
-	self->drawing_board.size = (DrawingBoardSize) SSD1306_Screen_size;
-	self->drawing_board.clear = (DrawingBoardClear) SSD1306_Screen_clear;
-	self->drawing_board.flush = (DrawingBoardFlush) SSD1306_Screen_flush;
-
+	self->drawing_board = &drawing_board_vtable;
 	self->adaptor = adaptor;
 
 	self->size.x = 128;

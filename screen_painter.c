@@ -3,25 +3,8 @@
 #include <stddef.h>
 #include <assert.h>
 
-typedef void *(*DrawingBoardInterfaceFallbackHandler)();
-void *DrawingBoardInterface_fallback_handler() { return NULL; }
-
-/// The place-holder for interface methods
-void DrawingBoardInterface_initialize_0(struct DrawingBoardInterface *self) {
-	DrawingBoardInterfaceFallbackHandler *fp;
-	int size;
-
-	fp = (DrawingBoardInterfaceFallbackHandler *) self;
-	size = sizeof(struct DrawingBoardInterface) / sizeof(*fp);
-	while (size--)
-		*fp++ = DrawingBoardInterface_fallback_handler;
-}
-
 void DrawingBoard_fill_fallback(
-	struct DrawingBoardInterface *screen,
-	struct Point p1,
-	struct Point p2,
-	int color
+	void *screen, struct Point p1, struct Point p2, int color
 ) {
 	struct RectPointIterator point_iterator;
 	struct Point p;
@@ -29,24 +12,61 @@ void DrawingBoard_fill_fallback(
 	RectPointIterator_initialize(&point_iterator, p1, p2);
 
 	while (PointIterator_next(&point_iterator, &p))
-		screen->draw_point(screen, p, color);
+		(*(struct DrawingBoardInterface **) screen)
+			->draw_point(screen, p, color);
 }
 
-void DrawingBoard_clear_fallback(
-	struct DrawingBoardInterface *screen,
-	int color
-) {
+void DrawingBoard_clear_fallback(void *screen, int color) {
 	struct Point p1, p2;
 
 	Point_initialize(&p1, 0, 0);
-	screen->size(screen, &p2);
+	(*(struct DrawingBoardInterface **) screen)->size(screen, &p2);
 	DrawingBoard_fill_fallback(screen, p1, p2, color);
 }
 
-void DrawingBoardInterface_initialize(struct DrawingBoardInterface *self) {
-	DrawingBoardInterface_initialize_0(self);
-	self->clear = (DrawingBoardClear) DrawingBoard_clear_fallback;
-	self->fill = (DrawingBoardFill) DrawingBoard_fill_fallback;
+void Painter_draw_point(
+	struct Painter *self, struct Point p, int color
+) {
+	DrawingBoardDrawPoint fn;
+	fn = (*self->drawing_board)->draw_point;
+	assert(fn);
+	if (fn)
+		fn(self->drawing_board, p, color);
+}
+
+void Painter_size(struct Painter *self, struct Point *p) {
+	DrawingBoardSize fn;
+	fn = (*self->drawing_board)->size;
+	assert(fn);
+	if (fn)
+		fn(self->drawing_board, p);
+}
+
+void Painter_fill(
+	struct Painter *self, struct Point p1, struct Point p2, int color
+) {
+	DrawingBoardFill fn;
+	fn = (*self->drawing_board)->fill;
+	if (fn)
+		fn(self->drawing_board, p1, p2, color);
+	else
+		DrawingBoard_fill_fallback(self->drawing_board, p1, p2, color);
+}
+
+void Painter_clear(struct Painter *self, int color) {
+	DrawingBoardClear fn;
+	fn = (*self->drawing_board)->clear;
+	if (fn)
+		fn(self->drawing_board, color);
+	else
+		DrawingBoard_clear_fallback(self->drawing_board, color);
+}
+
+void Painter_flush(struct Painter *self) {
+	DrawingBoardFlush fn;
+	fn = (*self->drawing_board)->flush;
+	if (fn)
+		fn(self->drawing_board);
 }
 
 void Painter_draw_line(
