@@ -169,6 +169,8 @@ int SSD1306_Screen_page_byte_empty(
 	return self->clear_color;
 }
 
+/// This function will send data to SSD1306 through IIC directly as it is
+/// designed to speed up operations. The `auto_flush` is ignored here.
 void SSD1306_Screen_iterate_page(
 	struct SSD1306_Screen *self,
 	int page_index,
@@ -207,7 +209,7 @@ void SSD1306_Screen_flush(struct SSD1306_Screen *self) {
 }
 
 void SSD1306_Screen_clear(struct SSD1306_Screen *self, int color) {
-	/// clear_color represents a page, not a point
+	/// `self->clear_color` represents a page, not a point.
 	self->clear_color = color ? 0xFF : 0;
 	SSD1306_Screen_iterate(self, SSD1306_Screen_page_byte_empty);
 }
@@ -257,6 +259,8 @@ void SSD1306_Screen_initialize(
 
 	self->size.x = 128;
 	self->size.y = 64;
+	self->auto_flush = 0;
+	self->half_mode = 0;
 
 	SSD1306_Screen_prepare(self);
 }

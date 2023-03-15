@@ -71,9 +71,8 @@ void ST7735_Screen_fill(
 	struct RectPointIterator point_iterator;
 	struct Point p;
 
-	RectPointIterator_initialize(&point_iterator, p1, p2);
 	ST7735_Screen_set_address(self, p1, p2);
-
+	RectPointIterator_initialize(&point_iterator, p1, p2);
 	while (PointIterator_next(&point_iterator, &p))
 		ST7735_Screen_write_data_16(self, (uint16_t) color);
 }

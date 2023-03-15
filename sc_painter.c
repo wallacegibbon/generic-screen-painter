@@ -3,25 +3,16 @@
 #include <stddef.h>
 #include <assert.h>
 
-void DrawingBoard_fill_fallback(
+static void DrawingBoard_fill_fallback(
 	void *screen, struct Point p1, struct Point p2, int color
 ) {
 	struct RectPointIterator point_iterator;
 	struct Point p;
 
 	RectPointIterator_initialize(&point_iterator, p1, p2);
-
 	while (PointIterator_next(&point_iterator, &p))
 		(*(struct DrawingBoardInterface **) screen)
 			->draw_point(screen, p, color);
-}
-
-void DrawingBoard_clear_fallback(void *screen, int color) {
-	struct Point p1, p2;
-
-	Point_initialize(&p1, 0, 0);
-	(*(struct DrawingBoardInterface **) screen)->size(screen, &p2);
-	DrawingBoard_fill_fallback(screen, p1, p2, color);
 }
 
 void Painter_draw_point(
@@ -53,13 +44,20 @@ void Painter_fill(
 		DrawingBoard_fill_fallback(self->drawing_board, p1, p2, color);
 }
 
+void Painter_fill_whole(struct Painter *self, int color) {
+	struct Point p1, p2;
+	Point_initialize(&p1, 0, 0);
+	Painter_size(self, &p2);
+	Painter_fill(self, p1, p2, color);
+}
+
 void Painter_clear(struct Painter *self, int color) {
 	DrawingBoardClear fn;
 	fn = (*self->drawing_board)->clear;
 	if (fn)
 		fn(self->drawing_board, color);
 	else
-		DrawingBoard_clear_fallback(self->drawing_board, color);
+		Painter_fill_whole(self, color);
 }
 
 void Painter_flush(struct Painter *self) {
@@ -76,7 +74,6 @@ void Painter_draw_line(
 	struct Point p;
 
 	LinePointIterator_initialize(&point_iterator, p1, p2);
-
 	while (PointIterator_next(&point_iterator, &p))
 		Painter_draw_point(self, p, color);
 }
@@ -103,7 +100,6 @@ void Painter_draw_circle(
 	int i;
 
 	CirclePointIterator_initialize(&point_iterator, p, radius);
-
 	while (PointIterator_next(&point_iterator, buffer))
 		for (i = 0; i < 8; i++)
 			Painter_draw_point(self, buffer[i], color);
