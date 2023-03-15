@@ -1,4 +1,4 @@
-#include "point_iterator.h"
+#include "sc_point_iterator.h"
 #include <stdio.h>
 
 int LinePointIterator_next(

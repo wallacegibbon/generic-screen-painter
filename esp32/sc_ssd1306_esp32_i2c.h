@@ -1,7 +1,7 @@
 #ifndef __SSD1306_ESP32_I2C_H
 #define __SSD1306_ESP32_I2C_H
 
-#include "ssd1306.h"
+#include "sc_ssd1306.h"
 #include "driver/i2c.h"
 #include "driver/gpio.h"
 

@@ -1,7 +1,7 @@
 #ifndef __SCREEN_PAINTER_H
 #define __SCREEN_PAINTER_H
 
-#include "screen_common.h"
+#include "sc_common.h"
 
 typedef void (*DrawingBoardDrawPoint)(void *screen, struct Point p, int color);
 typedef void (*DrawingBoardFill)(void *screen, struct Point p1, struct Point p2, int color);

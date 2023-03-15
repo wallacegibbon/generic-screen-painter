@@ -1,4 +1,4 @@
-#include "ssd1306.h"
+#include "sc_ssd1306.h"
 #include <string.h>
 
 #define SSD1306_CTRL_WRITE_CMD_SINGLE 0x80

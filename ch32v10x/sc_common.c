@@ -1,4 +1,4 @@
-#include "screen_common.h"
+#include "sc_common.h"
 #include "core_systick.h"
 
 void delay(int milliseconds) {

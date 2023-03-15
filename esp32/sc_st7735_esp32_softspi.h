@@ -1,7 +1,7 @@
 #ifndef __ST7735_ESP32_SOFTSPI_H
 #define __ST7735_ESP32_SOFTSPI_H
 
-#include "st7735.h"
+#include "sc_st7735.h"
 
 struct ST7735_ScreenAdaptorESP32SoftSPI {
 	const struct ST7735_ScreenAdaptorInterface *adaptor;

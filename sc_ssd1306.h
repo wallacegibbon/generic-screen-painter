@@ -1,7 +1,7 @@
 #ifndef __SSD1306_H
 #define __SSD1306_H
 
-#include "screen_painter.h"
+#include "sc_painter.h"
 #include <stdint.h>
 
 typedef void (*SSD1306_ScreenAdaptorStartTransmit)(void *adaptor);

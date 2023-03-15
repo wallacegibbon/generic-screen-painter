@@ -1,4 +1,4 @@
-#include "ssd1306_esp32_i2c.h"
+#include "sc_ssd1306_esp32_i2c.h"
 #include "esp_log.h"
 
 void SSD1306_ScreenAdaptorESP32I2C_start_transmit(struct SSD1306_ScreenAdaptorESP32I2C *self);

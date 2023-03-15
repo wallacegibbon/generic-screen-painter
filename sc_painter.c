@@ -1,5 +1,5 @@
-#include "screen_painter.h"
-#include "point_iterator.h"
+#include "sc_painter.h"
+#include "sc_point_iterator.h"
 #include <stddef.h>
 #include <assert.h>
 

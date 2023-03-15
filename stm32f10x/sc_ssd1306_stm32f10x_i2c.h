@@ -1,7 +1,7 @@
 #ifndef __SSD1306_STM32F10x_I2C_H
 #define __SSD1306_STM32F10x_I2C_H
 
-#include "ssd1306.h"
+#include "sc_ssd1306.h"
 
 struct SSD1306_ScreenAdaptorSTM32F10xI2C {
 	const struct SSD1306_ScreenAdaptorInterface *adaptor;

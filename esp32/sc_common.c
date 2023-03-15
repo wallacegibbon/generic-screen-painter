@@ -1,4 +1,4 @@
-#include "screen_common.h"
+#include "sc_common.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
