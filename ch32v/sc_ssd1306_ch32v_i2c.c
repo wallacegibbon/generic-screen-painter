@@ -50,8 +50,10 @@ void SSD1306_ScreenAdaptorCH32VI2C_initialize(
 	I2C_InitTypeDef I2C_InitTSturcture = { 0 };
 
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
-	//GPIO_PinRemapConfig(GPIO_Remap_I2C1, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
+
+	/// When Remap is set, I2C pins will become PB8 and PB9.
+	//GPIO_PinRemapConfig(GPIO_Remap_I2C1, ENABLE);
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
