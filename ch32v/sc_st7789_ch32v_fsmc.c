@@ -3,7 +3,8 @@
 #include "ch32v30x_gpio.h"
 #include "ch32v30x_fsmc.h"
 
-#define LCD_CMD  (*(volatile uint8_t *) 0x6001FFFF)
+/// A17 is controlling the DATA/CMD signal (the `DCX` Pin). 0 -> cmd, 1 -> data
+#define LCD_CMD  (*(volatile uint8_t *) 0x60000000)
 #define LCD_DATA (*(volatile uint8_t *) 0x60020000)
 
 void ST7789_ScreenAdaptorCH32VFSMC_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data);
@@ -49,37 +50,29 @@ void ST7789_ScreenAdaptorCH32VFSMC_initialize(
 	FSMC_NORSRAMTimingInitTypeDef write_timing = { 0 };
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE, ENABLE);
 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_14 | GPIO_Pin_15;
+	/// PD14 -- FSMC_D0
+	/// PD15 -- FSMC_D1
+	/// PD0  -- FSMC_D2
+	/// PD1  -- FSMC_D3
+	/// PD4  -- FSMC_NOE -- LCD_RD
+	/// PD5  -- FSMC_NWE -- LCD_WR
+	/// PD12 -- FSMC_A17 -- LCD_DC
+	/// PD7  -- FSMC_NE1 -- LCD_CS
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14 | GPIO_Pin_15 | GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_12 | GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 
+	/// PE7  -- FSMC_D4
+	/// PE8  -- FSMC_D5
+	/// PE9  -- FSMC_D6
+	/// PE10 -- FSMC_D7
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9 | GPIO_Pin_10;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOE, &GPIO_InitStructure);
-
-	/// RS--D12
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-	/// CS: PD7
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOD, &GPIO_InitStructure);
-	GPIO_ResetBits(GPIOD, GPIO_Pin_7);
-
-	/// BG LED
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_14;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB, GPIO_Pin_14);
 
 	read_write_timing.FSMC_AddressSetupTime = 0x01;
 	read_write_timing.FSMC_AddressHoldTime = 0x00;
