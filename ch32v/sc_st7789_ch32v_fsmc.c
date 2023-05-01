@@ -3,10 +3,6 @@
 #include "ch32v30x_gpio.h"
 #include "ch32v30x_fsmc.h"
 
-/// A17 is controlling the DATA/CMD signal (the `DCX` Pin). 0 -> cmd, 1 -> data
-#define LCD_CMD  (*(volatile uint8_t *) 0x60000000)
-#define LCD_DATA (*(volatile uint8_t *) 0x60020000)
-
 void ST7789_ScreenAdaptorCH32VFSMC_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data);
 void ST7789_ScreenAdaptorCH32VFSMC_write_data(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data);
 void ST7789_ScreenAdaptorCH32VFSMC_write_cmd(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd);
@@ -25,20 +21,20 @@ static const struct ST7789_ScreenAdaptorInterface adaptor_vtable = {
 void ST7789_ScreenAdaptorCH32VFSMC_write_data_16(
 	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data
 ) {
-	LCD_DATA = (uint8_t) (data >> 8);
-	LCD_DATA = (uint8_t) data;
+	ST7789_LCD_DATA = (uint8_t) (data >> 8);
+	ST7789_LCD_DATA = (uint8_t) data;
 }
 
 void ST7789_ScreenAdaptorCH32VFSMC_write_data(
 	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data
 ) {
-	LCD_DATA = data;
+	ST7789_LCD_DATA = data;
 }
 
 void ST7789_ScreenAdaptorCH32VFSMC_write_cmd(
 	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd
 ) {
-	LCD_CMD = cmd;
+	ST7789_LCD_CMD = cmd;
 }
 
 void ST7789_ScreenAdaptorCH32VFSMC_initialize(

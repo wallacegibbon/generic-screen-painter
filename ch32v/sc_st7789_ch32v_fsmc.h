@@ -3,6 +3,10 @@
 
 #include "sc_st7789.h"
 
+/// A17 is controlling the DATA/CMD signal (the `DCX` Pin). 0 -> cmd, 1 -> data
+#define ST7789_LCD_CMD  (*(volatile uint8_t *) 0x60000000)
+#define ST7789_LCD_DATA (*(volatile uint8_t *) 0x60020000)
+
 struct ST7789_ScreenAdaptorCH32VFSMC {
 	const struct ST7789_ScreenAdaptorInterface *adaptor;
 };
