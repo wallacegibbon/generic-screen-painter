@@ -21,20 +21,20 @@ static const struct ST7789_ScreenAdaptorInterface adaptor_vtable = {
 void ST7789_ScreenAdaptorCH32VFSMC_write_data_16(
 	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data
 ) {
-	ST7789_LCD_DATA = (uint8_t) (data >> 8);
-	ST7789_LCD_DATA = (uint8_t) data;
+	*(volatile uint8_t *) ST7789_LCD_DATA = (uint8_t) (data >> 8);
+	*(volatile uint8_t *) ST7789_LCD_DATA = (uint8_t) data;
 }
 
 void ST7789_ScreenAdaptorCH32VFSMC_write_data(
 	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data
 ) {
-	ST7789_LCD_DATA = data;
+	*(volatile uint8_t *) ST7789_LCD_DATA = data;
 }
 
 void ST7789_ScreenAdaptorCH32VFSMC_write_cmd(
 	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd
 ) {
-	ST7789_LCD_CMD = cmd;
+	*(volatile uint8_t *) ST7789_LCD_CMD = cmd;
 }
 
 void ST7789_ScreenAdaptorCH32VFSMC_initialize(

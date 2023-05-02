@@ -26,5 +26,9 @@ void ST7735_Screen_initialize(
 	struct ST7735_ScreenAdaptorInterface **adaptor
 );
 
+void ST7735_Screen_set_address(
+	struct ST7735_Screen *self, struct Point p1, struct Point p2
+);
+
 #endif
 
