@@ -5,8 +5,7 @@
 
 void ST7789_Screen_draw_point(struct ST7789_Screen *self, struct Point p, int color);
 void ST7789_Screen_size(struct ST7789_Screen *self, struct Point *p);
-void ST7789_Screen_fill(struct ST7789_Screen *self, struct Point p1, struct Point p2, int color
-);
+void ST7789_Screen_fill(struct ST7789_Screen *self, struct Point p1, struct Point p2, int color);
 
 static const struct DrawingBoardInterface drawing_board_vtable = {
 	.draw_point = (DrawingBoardDrawPoint) ST7789_Screen_draw_point,
@@ -68,12 +67,10 @@ void ST7789_Screen_size(struct ST7789_Screen *self, struct Point *p) {
 void ST7789_Screen_fill(
 	struct ST7789_Screen *self, struct Point p1, struct Point p2, int color
 ) {
-	struct RectPointIterator point_iterator;
-	struct Point p;
+	int n = ABS((p1.x - p2.x) * (p1.y - p2.y));
 
 	ST7789_Screen_set_address(self, p1, p2);
-	RectPointIterator_initialize(&point_iterator, p1, p2);
-	while (PointIterator_next(&point_iterator, &p))
+	while (n--)
 		ST7789_Screen_write_data_16(self, (uint16_t) color);
 }
 
