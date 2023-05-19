@@ -106,46 +106,78 @@ void Painter_draw_circle(
 			Painter_draw_point(self, buffer[i], color);
 }
 
-int Painter_draw_char(
-	struct Painter *self, char ch, struct Point pos, int size,
-	int foreground, int background
+static int Painter_draw_char_byte(
+	struct Painter *self, uint8_t byte, int x, int y, struct ColorPair color
 ) {
-	int font_byte_count, row, i, j, color;
-	const uint8_t *font_buffer = NULL;
 	struct Point p;
+	int i, c;
 
-	if (size == 16)
-		font_buffer = ascii_1608;
-	else if (size == 32)
-		font_buffer = ascii_3216;
-
-	while (font_buffer == NULL);
-
-	ch = ch - ' ';
-	font_byte_count = size * (size / 2) / 8;
-
-	/// this algorithm do not support 32bit font
-	for (i = 0; i < font_byte_count; i++) {
-		row = font_buffer[ch * font_byte_count + i];
-		for (j = 0; j < 8; j++) {
-			color = row & 0x80 ? foreground : background;
-			Point_initialize(&p, pos.x + j, pos.y + i);
-			Painter_draw_point(self, p, color);
-			row <<= 1;
-		}
+	for (i = 0; i < 8; i++) {
+		c = byte & 0x80 ? color.foreground : color.background;
+		Point_initialize(&p, x + i, y);
+		Painter_draw_point(self, p, c);
+		byte <<= 1;
 	}
 }
 
+static int Painter_draw_char_16(
+	struct Painter *self, int idx, struct Point pos, const uint8_t *buffer, struct ColorPair color
+) {
+	int i;
+
+	for (i = 0; i < 16; i++)
+		Painter_draw_char_byte(
+			self, buffer[idx * 16 + i], pos.x, pos.y + i, color
+		);
+
+	return 1;
+}
+
+static int Painter_draw_char_32(
+	struct Painter *self, int idx, struct Point pos, const uint16_t *buffer, struct ColorPair color
+) {
+	int i, t;
+
+	for (i = 0; i < 32; i++) {
+		t = buffer[idx * 32 + i];
+		Painter_draw_char_byte(
+			self, t & 0xFF, pos.x, pos.y + i, color
+		);
+		Painter_draw_char_byte(
+			self, t >> 8, pos.x + 8, pos.y + i, color
+		);
+	}
+
+	return 1;
+}
+
+int Painter_draw_char(
+	struct Painter *self, char ch, struct Point pos, int size, struct ColorPair color
+) {
+	int idx = ch - ' ';
+
+	if (size == 32)
+		return Painter_draw_char_32(
+			self, idx, pos, (const uint16_t *) ascii_3216, color
+		);
+
+	if (size == 16)
+		return Painter_draw_char_16(
+			self, idx, pos, ascii_1608, color
+		);
+
+	return 0;
+}
+
 int Painter_draw_string(
-	struct Painter *self, char *str, struct Point pos, int size,
-	int foreground, int background
+	struct Painter *self, char *str, struct Point pos, int size, struct ColorPair color
 ) {
 	/// You can make the padding an argument if you want.
 	int padding = 0;
+	int char_width = size / 2;
 	int c = *str;
 
-	for (; c; pos.x += size + padding, c = *++str)
-		Painter_draw_char(self, c, pos, size, foreground, background);
-
+	for (; c; pos.x += char_width + padding, c = *++str)
+		Painter_draw_char(self, c, pos, size, color);
 }
 

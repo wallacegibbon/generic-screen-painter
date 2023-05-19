@@ -31,8 +31,8 @@ void Painter_flush(struct Painter *self);
 void Painter_draw_line(struct Painter *self, struct Point p1, struct Point p2, int color);
 void Painter_draw_rectangle(struct Painter *self, struct Point p1, struct Point p2, int color);
 void Painter_draw_circle(struct Painter *self, struct Point p, int r, int color);
-int Painter_draw_char(struct Painter *self, char ch, struct Point pos, int size, int foreground, int background);
-int Painter_draw_string(struct Painter *self, char *str, struct Point pos, int size, int foreground, int background);
+int Painter_draw_char(struct Painter *self, char ch, struct Point pos, int size, struct ColorPair color);
+int Painter_draw_string(struct Painter *self, char *str, struct Point pos, int size, struct ColorPair color);
 
 #endif
 

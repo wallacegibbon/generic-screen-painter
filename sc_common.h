@@ -8,6 +8,13 @@ static inline void Point_initialize(struct Point *self, int x, int y) {
 	self->y = y;
 }
 
+struct ColorPair { int foreground; int background; };
+
+static inline void ColorPair_initialize(struct ColorPair *self, int f, int b) {
+	self->foreground = f;
+	self->background = b;
+}
+
 void delay(int milliseconds);
 
 #define MAX(a, b) (a > b ? a : b)
