@@ -1,5 +1,6 @@
 #include "sc_painter.h"
 #include "sc_point_iterator.h"
+#include "sc_ascii_font.h"
 #include <stddef.h>
 #include <assert.h>
 
@@ -12,7 +13,7 @@ static void DrawingBoard_fill_fallback(
 	RectPointIterator_initialize(&point_iterator, p1, p2);
 	while (PointIterator_next(&point_iterator, &p))
 		(*(struct DrawingBoardInterface **) screen)
-			->draw_point(screen, p, color);
+		->draw_point(screen, p, color);
 }
 
 void Painter_draw_point(
@@ -103,5 +104,48 @@ void Painter_draw_circle(
 	while (PointIterator_next(&point_iterator, buffer))
 		for (i = 0; i < 8; i++)
 			Painter_draw_point(self, buffer[i], color);
+}
+
+int Painter_draw_char(
+	struct Painter *self, char ch, struct Point pos, int size,
+	int foreground, int background
+) {
+	int font_byte_count, row, i, j, color;
+	const uint8_t *font_buffer = NULL;
+	struct Point p;
+
+	if (size == 16)
+		font_buffer = ascii_1608;
+	else if (size == 32)
+		font_buffer = ascii_3216;
+
+	while (font_buffer == NULL);
+
+	ch = ch - ' ';
+	font_byte_count = size * (size / 2) / 8;
+
+	/// this algorithm do not support 32bit font
+	for (i = 0; i < font_byte_count; i++) {
+		row = font_buffer[ch * font_byte_count + i];
+		for (j = 0; j < 8; j++) {
+			color = row & 0x80 ? foreground : background;
+			Point_initialize(&p, pos.x + j, pos.y + i);
+			Painter_draw_point(self, p, color);
+			row <<= 1;
+		}
+	}
+}
+
+int Painter_draw_string(
+	struct Painter *self, char *str, struct Point pos, int size,
+	int foreground, int background
+) {
+	/// You can make the padding an argument if you want.
+	int padding = 0;
+	int c = *str;
+
+	for (; c; pos.x += size + padding, c = *++str)
+		Painter_draw_char(self, c, pos, size, foreground, background);
+
 }
 
