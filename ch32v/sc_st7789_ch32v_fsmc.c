@@ -8,38 +8,25 @@ void ST7789_ScreenAdaptorCH32VFSMC_write_data(struct ST7789_ScreenAdaptorCH32VFS
 void ST7789_ScreenAdaptorCH32VFSMC_write_cmd(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd);
 
 static const struct ST7789_ScreenAdaptorInterface adaptor_vtable = {
-	.write_data_16 = (ST7789_ScreenAdaptorWriteData16)
-		ST7789_ScreenAdaptorCH32VFSMC_write_data_16,
-
-	.write_data = (ST7789_ScreenAdaptorWriteData)
-		ST7789_ScreenAdaptorCH32VFSMC_write_data,
-
-	.write_cmd = (ST7789_ScreenAdaptorWriteCmd)
-		ST7789_ScreenAdaptorCH32VFSMC_write_cmd
+	.write_data_16 = (ST7789_ScreenAdaptorWriteData16) ST7789_ScreenAdaptorCH32VFSMC_write_data_16,
+	.write_data = (ST7789_ScreenAdaptorWriteData) ST7789_ScreenAdaptorCH32VFSMC_write_data,
+	.write_cmd = (ST7789_ScreenAdaptorWriteCmd) ST7789_ScreenAdaptorCH32VFSMC_write_cmd
 };
 
-void ST7789_ScreenAdaptorCH32VFSMC_write_data_16(
-	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data
-) {
+void ST7789_ScreenAdaptorCH32VFSMC_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data) {
 	*(volatile uint8_t *) ST7789_LCD_DATA = (uint8_t) (data >> 8);
 	*(volatile uint8_t *) ST7789_LCD_DATA = (uint8_t) data;
 }
 
-void ST7789_ScreenAdaptorCH32VFSMC_write_data(
-	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data
-) {
+void ST7789_ScreenAdaptorCH32VFSMC_write_data(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data) {
 	*(volatile uint8_t *) ST7789_LCD_DATA = data;
 }
 
-void ST7789_ScreenAdaptorCH32VFSMC_write_cmd(
-	struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd
-) {
+void ST7789_ScreenAdaptorCH32VFSMC_write_cmd(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd) {
 	*(volatile uint8_t *) ST7789_LCD_CMD = cmd;
 }
 
-void ST7789_ScreenAdaptorCH32VFSMC_initialize(
-	struct ST7789_ScreenAdaptorCH32VFSMC *self
-) {
+void ST7789_ScreenAdaptorCH32VFSMC_initialize(struct ST7789_ScreenAdaptorCH32VFSMC *self) {
 	GPIO_InitTypeDef GPIO_InitStructure = { 0 };
 	FSMC_NORSRAMInitTypeDef FSMC_NORSRAMInitStructure = { 0 };
 	FSMC_NORSRAMTimingInitTypeDef read_write_timing = { 0 };

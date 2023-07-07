@@ -13,27 +13,19 @@ static const struct DrawingBoardInterface drawing_board_vtable = {
 	.fill = (DrawingBoardFill) ST7789_Screen_fill
 };
 
-static inline void ST7789_Screen_write_data_16(
-	struct ST7789_Screen *self, uint16_t data
-) {
+static inline void ST7789_Screen_write_data_16(struct ST7789_Screen *self, uint16_t data) {
 	(*self->adaptor)->write_data_16(self->adaptor, data);
 }
 
-static inline void ST7789_Screen_write_data(
-	struct ST7789_Screen *self, uint8_t data
-) {
+static inline void ST7789_Screen_write_data(struct ST7789_Screen *self, uint8_t data) {
 	(*self->adaptor)->write_data(self->adaptor, data);
 }
 
-static inline void ST7789_Screen_write_cmd(
-	struct ST7789_Screen *self, uint8_t data
-) {
+static inline void ST7789_Screen_write_cmd(struct ST7789_Screen *self, uint8_t data) {
 	(*self->adaptor)->write_cmd(self->adaptor, data);
 }
 
-void ST7789_Screen_set_address(
-	struct ST7789_Screen *self, struct Point p1, struct Point p2
-) {
+void ST7789_Screen_set_address(struct ST7789_Screen *self, struct Point p1, struct Point p2) {
 	/// column address settings
 	ST7789_Screen_write_cmd(self, 0x2A);
 	ST7789_Screen_write_data_16(self, p1.x);
@@ -48,11 +40,8 @@ void ST7789_Screen_set_address(
 	ST7789_Screen_write_cmd(self, 0x2C);
 }
 
-void ST7789_Screen_draw_point(
-	struct ST7789_Screen *self, struct Point p, int color
-) {
-	if (p.x >= self->size.x || p.y >= self->size.y)
-		return;
+void ST7789_Screen_draw_point(struct ST7789_Screen *self, struct Point p, int color) {
+	if (p.x >= self->size.x || p.y >= self->size.y) return;
 
 	ST7789_Screen_set_address(self, p, p);
 	ST7789_Screen_write_data_16(self, (uint16_t) color);
@@ -64,9 +53,7 @@ void ST7789_Screen_size(struct ST7789_Screen *self, struct Point *p) {
 
 /// The default `fill` calls `draw_point`, which will cause many
 /// unnecessary `set_address` invocations.
-void ST7789_Screen_fill(
-	struct ST7789_Screen *self, struct Point p1, struct Point p2, int color
-) {
+void ST7789_Screen_fill(struct ST7789_Screen *self, struct Point p1, struct Point p2, int color) {
 	int n = ABS((p1.x - p2.x) * (p1.y - p2.y));
 
 	ST7789_Screen_set_address(self, p1, p2);
@@ -171,10 +158,7 @@ void ST7789_Screen_prepare(struct ST7789_Screen *self) {
 	ST7789_Screen_write_cmd(self, 0x29);
 }
 
-void ST7789_Screen_initialize(
-	struct ST7789_Screen *self,
-	struct ST7789_ScreenAdaptorInterface **adaptor
-) {
+void ST7789_Screen_initialize(struct ST7789_Screen *self, struct ST7789_ScreenAdaptorInterface **adaptor) {
 	memset(self, 0, sizeof(struct ST7789_Screen));
 
 	self->drawing_board = &drawing_board_vtable;
