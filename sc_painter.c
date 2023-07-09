@@ -103,6 +103,7 @@ static int Painter_draw_char_byte(struct Painter *self, uint8_t byte, int x, int
 		Painter_draw_point(self, p, c);
 		byte <<= 1;
 	}
+	return 1;
 }
 
 static int Painter_draw_char_16(struct Painter *self, int idx, struct Point pos, const uint8_t *buffer, struct ColorPair color) {
@@ -139,8 +140,11 @@ int Painter_draw_string(struct Painter *self, char *str, struct Point pos, int s
 	int padding = 0;
 	int char_width = size / 2;
 	int c = *str;
+	int cnt = 0;
 
 	for (; c; pos.x += char_width + padding, c = *++str)
-		Painter_draw_char(self, c, pos, size, color);
+		cnt += Painter_draw_char(self, c, pos, size, color);
+
+	return cnt;
 }
 
