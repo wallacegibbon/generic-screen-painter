@@ -40,17 +40,9 @@ struct CirclePointIterator {
 	int py;
 };
 
-void LinePointIterator_initialize(
-	struct LinePointIterator *self, struct Point p1, struct Point p2
-);
-
-void RectPointIterator_initialize(
-	struct RectPointIterator *self, struct Point p1, struct Point p2
-);
-
-void CirclePointIterator_initialize(
-	struct CirclePointIterator *self, struct Point center, int radius
-);
+void line_p_iterator_initialize(struct LinePointIterator *self, struct Point p1, struct Point p2);
+void rect_p_terator_initialize(struct RectPointIterator *self, struct Point p1, struct Point p2);
+void circle_p_iterator_initialize(struct CirclePointIterator *self, struct Point center, int radius);
 
 #endif
 

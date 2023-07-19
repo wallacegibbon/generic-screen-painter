@@ -3,14 +3,14 @@
 
 struct Point { int x, y; };
 
-static inline void Point_initialize(struct Point *self, int x, int y) {
+static inline void point_initialize(struct Point *self, int x, int y) {
 	self->x = x;
 	self->y = y;
 }
 
 struct ColorPair { int foreground; int background; };
 
-static inline void ColorPair_initialize(struct ColorPair *self, int f, int b) {
+static inline void color_pair_initialize(struct ColorPair *self, int f, int b) {
 	self->foreground = f;
 	self->background = b;
 }

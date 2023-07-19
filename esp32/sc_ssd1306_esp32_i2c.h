@@ -12,11 +12,7 @@ struct SSD1306_ScreenAdaptorESP32I2C {
 	uint8_t address;
 };
 
-void SSD1306_ScreenAdaptorESP32I2C_initialize(
-	struct SSD1306_ScreenAdaptorESP32I2C *self,
-	int address,
-	i2c_port_t i2c_num
-);
+void ssd1306_adaptor_esp32_i2c_initialize(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num);
 
 #endif
 

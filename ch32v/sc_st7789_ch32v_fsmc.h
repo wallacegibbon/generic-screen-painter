@@ -11,9 +11,7 @@ struct ST7789_ScreenAdaptorCH32VFSMC {
 	const struct ST7789_ScreenAdaptorInterface *adaptor;
 };
 
-void ST7789_ScreenAdaptorCH32VFSMC_initialize(
-	struct ST7789_ScreenAdaptorCH32VFSMC *self
-);
+void st7789_screen_ch32v_fsmc_initialize(struct ST7789_ScreenAdaptorCH32VFSMC *self);
 
 #endif
 

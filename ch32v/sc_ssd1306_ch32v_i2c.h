@@ -8,10 +8,7 @@ struct SSD1306_ScreenAdaptorCH32VI2C {
 	uint8_t address;
 };
 
-void SSD1306_ScreenAdaptorCH32VI2C_initialize(
-	struct SSD1306_ScreenAdaptorCH32VI2C *self,
-	int address
-);
+void ssd1306_adaptor_ch32v_i2c_initialize(struct SSD1306_ScreenAdaptorCH32VI2C *self, int address);
 
 #endif
 
