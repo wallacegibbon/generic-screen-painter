@@ -27,12 +27,7 @@ struct SSD1306_Screen {
 	uint8_t buffer[128][8];
 };
 
-void ssd1306_initialize(
-	struct SSD1306_Screen *self,
-	struct SSD1306_ScreenAdaptorInterface **adaptor
-);
-
-/// SSD1306 specific interfaces
+void ssd1306_initialize(struct SSD1306_Screen *self, struct SSD1306_ScreenAdaptorInterface **adaptor);
 void ssd1306_fix_32row(struct SSD1306_Screen *self);
 void ssd1306_set_brightness(struct SSD1306_Screen *self, uint8_t value);
 void ssd1306_set_up_down_invert(struct SSD1306_Screen *self);

@@ -9,7 +9,7 @@ static void dawing_board_fill_fallback(void *screen, struct Point p1, struct Poi
 	struct Point p;
 
 	rect_p_terator_initialize(&point_iterator, p1, p2);
-	while (PointIterator_next(&point_iterator, &p))
+	while (point_iterator_next(&point_iterator, &p))
 		(*(struct DrawingBoardInterface **) screen)->draw_point(screen, p, color);
 }
 
@@ -66,7 +66,7 @@ void painter_draw_line(struct Painter *self, struct Point p1, struct Point p2, i
 	struct Point p;
 
 	line_p_iterator_initialize(&point_iterator, p1, p2);
-	while (PointIterator_next(&point_iterator, &p))
+	while (point_iterator_next(&point_iterator, &p))
 		painter_draw_point(self, p, color);
 }
 
@@ -88,7 +88,7 @@ void painter_draw_circle(struct Painter *self, struct Point p, int radius, int c
 	int i;
 
 	circle_p_iterator_initialize(&point_iterator, p, radius);
-	while (PointIterator_next(&point_iterator, buffer))
+	while (point_iterator_next(&point_iterator, buffer))
 		for (i = 0; i < 8; i++)
 			painter_draw_point(self, buffer[i], color);
 }
@@ -96,7 +96,6 @@ void painter_draw_circle(struct Painter *self, struct Point p, int radius, int c
 static int painter_draw_char_byte(struct Painter *self, uint8_t byte, int x, int y, struct ColorPair color) {
 	struct Point p;
 	int i, c;
-
 	for (i = 0; i < 8; i++) {
 		c = byte & 0x80 ? color.foreground : color.background;
 		point_initialize(&p, x + i, y);

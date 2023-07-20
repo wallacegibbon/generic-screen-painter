@@ -10,7 +10,7 @@ struct PointIteratorInterface {
 };
 
 /// `self` can point to `LinePointIterator`, `RectPointIterator`, ...
-static inline int PointIterator_next(void *self, struct Point *result) {
+static inline int point_iterator_next(void *self, struct Point *result) {
 	return ((struct PointIteratorInterface *) self)->next(self, result);
 }
 
