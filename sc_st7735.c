@@ -8,9 +8,9 @@ void st7735_size(struct ST7735_Screen *self, struct Point *p);
 void st7735_fill(struct ST7735_Screen *self, struct Point p1, struct Point p2, int color);
 
 static const struct DrawingBoardInterface drawing_board_vtable = {
-	.draw_point = (DrawingBoardDrawPoint) st7735_draw_point,
-	.size = (DrawingBoardSize) st7735_size,
-	.fill = (DrawingBoardFill) st7735_fill
+	.draw_point = (DrawingBoardDrawPoint)st7735_draw_point,
+	.size = (DrawingBoardSize)st7735_size,
+	.fill = (DrawingBoardFill)st7735_fill,
 };
 
 static inline void st7735_write_data_16(struct ST7735_Screen *self, uint16_t data) {
@@ -44,7 +44,7 @@ void st7735_draw_point(struct ST7735_Screen *self, struct Point p, int color) {
 	if (p.x >= self->size.x || p.y >= self->size.y) return;
 
 	st7735_set_address(self, p, p);
-	st7735_write_data_16(self, (uint16_t) color);
+	st7735_write_data_16(self, (uint16_t)color);
 }
 
 void st7735_size(struct ST7735_Screen *self, struct Point *p) {
@@ -58,7 +58,7 @@ void st7735_fill(struct ST7735_Screen *self, struct Point p1, struct Point p2, i
 
 	st7735_set_address(self, p1, p2);
 	while (n--)
-		st7735_write_data_16(self, (uint16_t) color);
+		st7735_write_data_16(self, (uint16_t)color);
 }
 
 void st7735_prepare(struct ST7735_Screen *self) {
@@ -177,4 +177,3 @@ void st7735_initialize(struct ST7735_Screen *self, struct ST7735_ScreenAdaptorIn
 
 	st7735_prepare(self);
 }
-

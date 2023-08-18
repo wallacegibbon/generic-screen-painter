@@ -1,16 +1,16 @@
 #include "sc_st7735_esp32_softspi.h"
-#include "sc_common.h"
-#include "driver/spi_master.h"
 #include "driver/gpio.h"
+#include "driver/spi_master.h"
+#include "sc_common.h"
 
 void st7735_adaptor_esp32_soft_spi_write_data_16(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint16_t data);
 void st7735_adaptor_esp32_soft_spi_write_data(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data);
 void st7735_adaptor_esp32_soft_spi_write_cmd(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data);
 
 static const struct ST7735_ScreenAdaptorInterface adaptor_vtable = {
-	.write_data_16 = (ST7735_ScreenAdaptorWriteData16) st7735_adaptor_esp32_soft_spi_write_data_16,
-	.write_data = (ST7735_ScreenAdaptorWriteData) st7735_adaptor_esp32_soft_spi_write_data,
-	.write_cmd = (ST7735_ScreenAdaptorWriteCmd) st7735_adaptor_esp32_soft_spi_write_cmd
+	.write_data_16 = (ST7735_ScreenAdaptorWriteData16)st7735_adaptor_esp32_soft_spi_write_data_16,
+	.write_data = (ST7735_ScreenAdaptorWriteData)st7735_adaptor_esp32_soft_spi_write_data,
+	.write_cmd = (ST7735_ScreenAdaptorWriteCmd)st7735_adaptor_esp32_soft_spi_write_cmd,
 };
 
 void st7735_adaptor_esp32_soft_spi_write_byte(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data) {
@@ -61,4 +61,3 @@ void st7735_adaptor_esp32_soft_spi_initialize(struct ST7735_ScreenAdaptorESP32So
 	ESP_ERROR_CHECK(gpio_set_level(rst_pin, 1));
 	delay(20);
 }
-

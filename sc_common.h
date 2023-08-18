@@ -1,14 +1,19 @@
 #ifndef __SCREEN_COMMON_H
 #define __SCREEN_COMMON_H
 
-struct Point { int x, y; };
+struct Point {
+	int x, y;
+};
 
 static inline void point_initialize(struct Point *self, int x, int y) {
 	self->x = x;
 	self->y = y;
 }
 
-struct ColorPair { int foreground; int background; };
+struct ColorPair {
+	int foreground;
+	int background;
+};
 
 static inline void color_pair_initialize(struct ColorPair *self, int f, int b) {
 	self->foreground = f;
@@ -24,4 +29,3 @@ void delay(int milliseconds);
 #define SQUARE(a) (a * a)
 
 #endif
-

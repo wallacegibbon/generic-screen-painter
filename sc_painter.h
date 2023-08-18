@@ -35,4 +35,3 @@ int painter_draw_char(struct Painter *self, char ch, struct Point pos, int size,
 int painter_draw_string(struct Painter *self, char *str, struct Point pos, int size, struct ColorPair color);
 
 #endif
-

@@ -11,7 +11,7 @@ struct PointIteratorInterface {
 
 /// `self` can point to `LinePointIterator`, `RectPointIterator`, ...
 static inline int point_iterator_next(void *self, struct Point *result) {
-	return ((struct PointIteratorInterface *) self)->next(self, result);
+	return ((struct PointIteratorInterface *)self)->next(self, result);
 }
 
 struct LinePointIterator {
@@ -45,4 +45,3 @@ void rect_p_terator_initialize(struct RectPointIterator *self, struct Point p1, 
 void circle_p_iterator_initialize(struct CirclePointIterator *self, struct Point center, int radius);
 
 #endif
-

@@ -1,8 +1,8 @@
 #include "sc_painter.h"
-#include "sc_point_iterator.h"
 #include "sc_ascii_font.h"
-#include <stddef.h>
+#include "sc_point_iterator.h"
 #include <assert.h>
+#include <stddef.h>
 
 static void dawing_board_fill_fallback(void *screen, struct Point p1, struct Point p2, int color) {
 	struct RectPointIterator point_iterator;
@@ -10,7 +10,7 @@ static void dawing_board_fill_fallback(void *screen, struct Point p1, struct Poi
 
 	rect_p_terator_initialize(&point_iterator, p1, p2);
 	while (point_iterator_next(&point_iterator, &p))
-		(*(struct DrawingBoardInterface **) screen)->draw_point(screen, p, color);
+		(*(struct DrawingBoardInterface **)screen)->draw_point(screen, p, color);
 }
 
 void painter_draw_point(struct Painter *self, struct Point p, int color) {
@@ -127,7 +127,7 @@ static int painter_draw_char_32(struct Painter *self, int idx, struct Point pos,
 int painter_draw_char(struct Painter *self, char ch, struct Point pos, int size, struct ColorPair color) {
 	int idx = ch - ' ';
 	if (size == 32)
-		return painter_draw_char_32(self, idx, pos, (const uint16_t *) ascii_3216, color);
+		return painter_draw_char_32(self, idx, pos, (const uint16_t *)ascii_3216, color);
 	if (size == 16)
 		return painter_draw_char_16(self, idx, pos, ascii_1608, color);
 
@@ -146,4 +146,3 @@ int painter_draw_string(struct Painter *self, char *str, struct Point pos, int s
 
 	return cnt;
 }
-

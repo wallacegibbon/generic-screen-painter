@@ -1,8 +1,8 @@
 #ifndef __SC_ST7789_H
 #define __SC_ST7789_H
 
-#include "sc_painter.h"
 #include "sc_common.h"
+#include "sc_painter.h"
 #include <stdint.h>
 
 typedef void (*ST7789_ScreenAdaptorWriteData16)(void *adaptor, uint16_t data);
@@ -25,4 +25,3 @@ void st7789_initialize(struct ST7789_Screen *self, struct ST7789_ScreenAdaptorIn
 void st7789_set_address(struct ST7789_Screen *self, struct Point p1, struct Point p2);
 
 #endif
-

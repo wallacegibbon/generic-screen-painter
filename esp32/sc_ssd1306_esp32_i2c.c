@@ -6,9 +6,9 @@ void ssd1306_adaptor_esp32_i2c_stop_transmit(struct SSD1306_ScreenAdaptorESP32I2
 void ssd1306_adaptor_esp32_i2c_write_byte(struct SSD1306_ScreenAdaptorESP32I2C *self, uint8_t data);
 
 static const struct SSD1306_ScreenAdaptorInterface adaptor_vtable = {
-	.start_transmit = (SSD1306_ScreenAdaptorStartTransmit) ssd1306_adaptor_esp32_i2c_start_transmit,
-	.stop_transmit = (SSD1306_ScreenAdaptorStopTransmit) ssd1306_adaptor_esp32_i2c_stop_transmit,
-	.write_byte = (SSD1306_ScreenAdaptorWriteByte) ssd1306_adaptor_esp32_i2c_write_byte
+	.start_transmit = (SSD1306_ScreenAdaptorStartTransmit)ssd1306_adaptor_esp32_i2c_start_transmit,
+	.stop_transmit = (SSD1306_ScreenAdaptorStopTransmit)ssd1306_adaptor_esp32_i2c_stop_transmit,
+	.write_byte = (SSD1306_ScreenAdaptorWriteByte)ssd1306_adaptor_esp32_i2c_write_byte,
 };
 
 void ssd1306_adaptor_esp32_i2c_start_transmit(struct SSD1306_ScreenAdaptorESP32I2C *self) {
@@ -45,4 +45,3 @@ void ssd1306_adaptor_esp32_i2c_initialize(struct SSD1306_ScreenAdaptorESP32I2C *
 	ESP_ERROR_CHECK(i2c_param_config(i2c_num, &config));
 	ESP_ERROR_CHECK(i2c_driver_install(i2c_num, I2C_MODE_MASTER, 0, 0, 0));
 }
-

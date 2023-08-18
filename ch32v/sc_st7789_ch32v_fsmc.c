@@ -1,36 +1,36 @@
 #include "sc_st7789_ch32v_fsmc.h"
-#include "sc_common.h"
-#include "ch32v30x_gpio.h"
 #include "ch32v30x_fsmc.h"
+#include "ch32v30x_gpio.h"
+#include "sc_common.h"
 
 void st7789_adaptor_ch32v_fsmc_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data);
 void st7789_adaptor_ch32v_fsmc_write_data(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data);
 void st7789_screen_ch32v_fsmc_write_cmd(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd);
 
 static const struct ST7789_ScreenAdaptorInterface adaptor_vtable = {
-	.write_data_16 = (ST7789_ScreenAdaptorWriteData16) st7789_adaptor_ch32v_fsmc_write_data_16,
-	.write_data = (ST7789_ScreenAdaptorWriteData) st7789_adaptor_ch32v_fsmc_write_data,
-	.write_cmd = (ST7789_ScreenAdaptorWriteCmd) st7789_screen_ch32v_fsmc_write_cmd
+	.write_data_16 = (ST7789_ScreenAdaptorWriteData16)st7789_adaptor_ch32v_fsmc_write_data_16,
+	.write_data = (ST7789_ScreenAdaptorWriteData)st7789_adaptor_ch32v_fsmc_write_data,
+	.write_cmd = (ST7789_ScreenAdaptorWriteCmd)st7789_screen_ch32v_fsmc_write_cmd,
 };
 
 void st7789_adaptor_ch32v_fsmc_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data) {
-	*(volatile uint8_t *) ST7789_LCD_DATA = (uint8_t) (data >> 8);
-	*(volatile uint8_t *) ST7789_LCD_DATA = (uint8_t) data;
+	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)(data >> 8);
+	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)data;
 }
 
 void st7789_adaptor_ch32v_fsmc_write_data(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data) {
-	*(volatile uint8_t *) ST7789_LCD_DATA = data;
+	*(volatile uint8_t *)ST7789_LCD_DATA = data;
 }
 
 void st7789_screen_ch32v_fsmc_write_cmd(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd) {
-	*(volatile uint8_t *) ST7789_LCD_CMD = cmd;
+	*(volatile uint8_t *)ST7789_LCD_CMD = cmd;
 }
 
 void st7789_screen_ch32v_fsmc_initialize(struct ST7789_ScreenAdaptorCH32VFSMC *self) {
-	GPIO_InitTypeDef gpio_init = { 0 };
-	FSMC_NORSRAMInitTypeDef fsmc_init = { 0 };
-	FSMC_NORSRAMTimingInitTypeDef read_write_timing = { 0 };
-	FSMC_NORSRAMTimingInitTypeDef write_timing = { 0 };
+	GPIO_InitTypeDef gpio_init = {0};
+	FSMC_NORSRAMInitTypeDef fsmc_init = {0};
+	FSMC_NORSRAMTimingInitTypeDef read_write_timing = {0};
+	FSMC_NORSRAMTimingInitTypeDef write_timing = {0};
 
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC, ENABLE);
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE, ENABLE);
@@ -94,4 +94,3 @@ void st7789_screen_ch32v_fsmc_initialize(struct ST7789_ScreenAdaptorCH32VFSMC *s
 
 	self->adaptor = &adaptor_vtable;
 }
-

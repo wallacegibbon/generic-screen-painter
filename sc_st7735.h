@@ -1,8 +1,8 @@
 #ifndef __ST7735_H
 #define __ST7735_H
 
-#include "sc_painter.h"
 #include "sc_common.h"
+#include "sc_painter.h"
 #include <stdint.h>
 
 typedef void (*ST7735_ScreenAdaptorWriteData16)(void *adaptor, uint16_t data);
@@ -25,4 +25,3 @@ void st7735_initialize(struct ST7735_Screen *self, struct ST7735_ScreenAdaptorIn
 void st7735_set_address(struct ST7735_Screen *self, struct Point p1, struct Point p2);
 
 #endif
-

@@ -15,4 +15,3 @@ struct ST7735_ScreenAdaptorESP32SoftSPI {
 void st7735_adaptor_esp32_soft_spi_initialize(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t mosi_pin, uint8_t sclk_pin, uint8_t cs_pin, uint8_t rst_pin, uint8_t dc_pin);
 
 #endif
-

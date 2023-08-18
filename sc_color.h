@@ -27,4 +27,3 @@
 #define BLACK_1bit 0
 
 #endif
-

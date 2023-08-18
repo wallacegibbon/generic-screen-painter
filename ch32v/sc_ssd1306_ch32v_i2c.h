@@ -11,4 +11,3 @@ struct SSD1306_ScreenAdaptorCH32VI2C {
 void ssd1306_adaptor_ch32v_i2c_initialize(struct SSD1306_ScreenAdaptorCH32VI2C *self, int address);
 
 #endif
-

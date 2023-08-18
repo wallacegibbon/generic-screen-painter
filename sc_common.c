@@ -5,6 +5,6 @@
 __attribute__((weak)) void delay(int milliseconds) {
 	volatile int i;
 	while (milliseconds--)
-		for (i = 0; i < 1000; i++);
+		for (i = 0; i < 1000; i++)
+			;
 }
-

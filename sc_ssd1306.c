@@ -12,10 +12,10 @@ void ssd1306_clear(struct SSD1306_Screen *self, int color);
 void ssd1306_flush(struct SSD1306_Screen *self);
 
 static const struct DrawingBoardInterface drawing_board_vtable = {
-	.draw_point = (DrawingBoardDrawPoint) ssd1306_draw_point,
-	.size = (DrawingBoardSize) ssd1306_size,
-	.clear = (DrawingBoardClear) ssd1306_clear,
-	.flush = (DrawingBoardFlush) ssd1306_flush
+	.draw_point = (DrawingBoardDrawPoint)ssd1306_draw_point,
+	.size = (DrawingBoardSize)ssd1306_size,
+	.clear = (DrawingBoardClear)ssd1306_clear,
+	.flush = (DrawingBoardFlush)ssd1306_flush,
 };
 
 static inline void ssd1306_start_transmit(struct SSD1306_Screen *self) {
@@ -238,4 +238,3 @@ void ssd1306_initialize(struct SSD1306_Screen *self, struct SSD1306_ScreenAdapto
 
 	ssd1306_prepare(self);
 }
-

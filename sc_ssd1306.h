@@ -36,4 +36,3 @@ void ssd1306_display_on(struct SSD1306_Screen *self);
 void ssd1306_display_off(struct SSD1306_Screen *self);
 
 #endif
-
