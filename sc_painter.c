@@ -1,5 +1,5 @@
-#include "sc_painter.h"
 #include "sc_ascii_font.h"
+#include "sc_painter.h"
 #include "sc_point_iterator.h"
 #include <assert.h>
 #include <stddef.h>
@@ -88,9 +88,10 @@ void painter_draw_circle(struct Painter *self, struct Point p, int radius, int c
 	int i;
 
 	circle_p_iterator_initialize(&point_iterator, p, radius);
-	while (point_iterator_next(&point_iterator, buffer))
+	while (point_iterator_next(&point_iterator, buffer)) {
 		for (i = 0; i < 8; i++)
 			painter_draw_point(self, buffer[i], color);
+	}
 }
 
 static int painter_draw_char_byte(struct Painter *self, uint8_t byte, int x, int y, struct ColorPair color) {

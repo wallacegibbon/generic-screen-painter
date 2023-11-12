@@ -1,7 +1,7 @@
-#include "sc_st7735_esp32_softspi.h"
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
 #include "sc_common.h"
+#include "sc_st7735_esp32_softspi.h"
 
 void st7735_adaptor_esp32_soft_spi_write_data_16(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint16_t data);
 void st7735_adaptor_esp32_soft_spi_write_data(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data);

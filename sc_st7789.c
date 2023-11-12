@@ -1,5 +1,5 @@
-#include "sc_st7789.h"
 #include "sc_point_iterator.h"
+#include "sc_st7789.h"
 #include <stddef.h>
 #include <string.h>
 
@@ -41,7 +41,8 @@ void st7789_set_address(struct ST7789_Screen *self, struct Point p1, struct Poin
 }
 
 void st7789_draw_point(struct ST7789_Screen *self, struct Point p, int color) {
-	if (p.x >= self->size.x || p.y >= self->size.y) return;
+	if (p.x >= self->size.x || p.y >= self->size.y)
+		return;
 
 	st7789_set_address(self, p, p);
 	st7789_write_data_16(self, (uint16_t)color);

@@ -36,7 +36,8 @@ int rect_p_iterator_next(struct RectPointIterator *self, struct Point *result) {
 	*result = self->cursor;
 	self->cursor.x++;
 	if (self->cursor.x > self->p2.x + 1) {
-		if (self->cursor.y == self->p2.y) return 0;
+		if (self->cursor.y == self->p2.y)
+			return 0;
 		self->cursor.x = 0;
 		self->cursor.y++;
 	}
@@ -51,7 +52,8 @@ void rect_p_terator_initialize(struct RectPointIterator *self, struct Point p1, 
 }
 
 int circle_p_iterator_next(struct CirclePointIterator *self, struct Point *buffer) {
-	if (self->py > self->px) return 0;
+	if (self->py > self->px)
+		return 0;
 
 	buffer[0].x = self->center.x - self->px;
 	buffer[0].y = self->center.y - self->py;

@@ -1,7 +1,7 @@
-#include "sc_st7789_ch32v_fsmc.h"
 #include "ch32v30x_fsmc.h"
 #include "ch32v30x_gpio.h"
 #include "sc_common.h"
+#include "sc_st7789_ch32v_fsmc.h"
 
 void st7789_adaptor_ch32v_fsmc_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data);
 void st7789_adaptor_ch32v_fsmc_write_data(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data);

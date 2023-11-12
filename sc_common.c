@@ -4,7 +4,8 @@
 /// without knowing the speed of the target machine.
 __attribute__((weak)) void delay(int milliseconds) {
 	volatile int i;
-	while (milliseconds--)
+	while (milliseconds--) {
 		for (i = 0; i < 1000; i++)
 			;
+	}
 }

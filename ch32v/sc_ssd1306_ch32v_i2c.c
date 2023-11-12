@@ -1,6 +1,6 @@
-#include "sc_ssd1306_ch32v_i2c.h"
 #include "sc_ch32v_i2c.h"
 #include "sc_common.h"
+#include "sc_ssd1306_ch32v_i2c.h"
 
 void ssd1306_adaptor_ch32v_i2c_start_transmit(struct SSD1306_ScreenAdaptorCH32VI2C *self);
 void ssd1306_adaptor_ch32v_i2c_stop_transmit(struct SSD1306_ScreenAdaptorCH32VI2C *self);
