@@ -1,7 +1,7 @@
 #include "sc_point_iterator.h"
 #include <stdio.h>
 
-int line_p_iterator_next(struct LinePointIterator *self, struct Point *result) {
+int line_p_iter_next(struct line_point_iter *self, struct point *result) {
 	*result = self->cursor;
 	self->acc.x += self->delta.x;
 	if (self->acc.x >= self->distance) {
@@ -16,8 +16,8 @@ int line_p_iterator_next(struct LinePointIterator *self, struct Point *result) {
 	return self->count++ < self->distance;
 }
 
-void line_p_iterator_initialize(struct LinePointIterator *self, struct Point p1, struct Point p2) {
-	self->iterator.next = (PointIteratorNext)line_p_iterator_next;
+void line_p_iter_initialize(struct line_point_iter *self, struct point p1, struct point p2) {
+	self->iterator.next = (point_iter_next_fn)line_p_iter_next;
 	self->cursor = p1;
 	self->destination = p2;
 	self->delta.x = p2.x - p1.x;
@@ -32,7 +32,7 @@ void line_p_iterator_initialize(struct LinePointIterator *self, struct Point p1,
 	self->count = 0;
 }
 
-int rect_p_iterator_next(struct RectPointIterator *self, struct Point *result) {
+int rect_p_iter_next(struct rect_point_iter *self, struct point *result) {
 	*result = self->cursor;
 	self->cursor.x++;
 	if (self->cursor.x > self->p2.x + 1) {
@@ -44,14 +44,14 @@ int rect_p_iterator_next(struct RectPointIterator *self, struct Point *result) {
 	return 1;
 }
 
-void rect_p_terator_initialize(struct RectPointIterator *self, struct Point p1, struct Point p2) {
-	self->iterator.next = (PointIteratorNext)rect_p_iterator_next;
+void rect_p_iter_initialize(struct rect_point_iter *self, struct point p1, struct point p2) {
+	self->iterator.next = (point_iter_next_fn)rect_p_iter_next;
 	point_initialize(&self->p1, MIN(p1.x, p2.x), MIN(p1.y, p2.y));
 	point_initialize(&self->p2, MAX(p1.x, p2.x), MAX(p1.y, p2.y));
 	self->cursor = self->p1;
 }
 
-int circle_p_iterator_next(struct CirclePointIterator *self, struct Point *buffer) {
+int circle_p_iter_next(struct circle_point_iter *self, struct point *buffer) {
 	if (self->py > self->px)
 		return 0;
 
@@ -81,8 +81,8 @@ int circle_p_iterator_next(struct CirclePointIterator *self, struct Point *buffe
 	return 1;
 }
 
-void circle_p_iterator_initialize(struct CirclePointIterator *self, struct Point center, int radius) {
-	self->iterator.next = (PointIteratorNext)circle_p_iterator_next;
+void circle_p_iter_initialize(struct circle_point_iter *self, struct point center, int radius) {
+	self->iterator.next = (point_iter_next_fn)circle_p_iter_next;
 	self->center = center;
 	self->radius = radius;
 	self->px = radius;

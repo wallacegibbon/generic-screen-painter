@@ -7,10 +7,10 @@
 #define ST7789_LCD_CMD ((uintptr_t)0x60000000)
 #define ST7789_LCD_DATA ((uintptr_t)0x60020000)
 
-struct ST7789_ScreenAdaptorCH32VFSMC {
-	const struct ST7789_ScreenAdaptorInterface *adaptor;
+struct st7789_adaptor_ch32v_fsmc {
+	const struct st7789_adaptor_i *adaptor;
 };
 
-void st7789_screen_ch32v_fsmc_initialize(struct ST7789_ScreenAdaptorCH32VFSMC *self);
+void st7789_adaptor_ch32v_fsmc_initialize(struct st7789_adaptor_ch32v_fsmc *self);
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef __SCREEN_COLOR_H
-#define __SCREEN_COLOR_H
+#ifndef __SC_COLOR_H
+#define __SC_COLOR_H
 
 #define WHITE_16bit 0xFFFF
 #define BLACK_16bit 0x0000

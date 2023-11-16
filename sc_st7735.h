@@ -1,27 +1,27 @@
-#ifndef __ST7735_H
-#define __ST7735_H
+#ifndef __SC_ST7735_H
+#define __SC_ST7735_H
 
 #include "sc_common.h"
 #include "sc_painter.h"
 #include <stdint.h>
 
-typedef void (*ST7735_ScreenAdaptorWriteData16)(void *adaptor, uint16_t data);
-typedef void (*ST7735_ScreenAdaptorWriteData)(void *adaptor, uint8_t data);
-typedef void (*ST7735_ScreenAdaptorWriteCmd)(void *adaptor, uint8_t data);
+typedef void (*st7735_adaptor_write_data_16_fn)(void *adaptor, uint16_t data);
+typedef void (*st7735_adaptor_write_data_fn)(void *adaptor, uint8_t data);
+typedef void (*st7735_adaptor_write_cmd_fn)(void *adaptor, uint8_t data);
 
-struct ST7735_ScreenAdaptorInterface {
-	ST7735_ScreenAdaptorWriteData16 write_data_16;
-	ST7735_ScreenAdaptorWriteData write_data;
-	ST7735_ScreenAdaptorWriteCmd write_cmd;
+struct st7735_adaptor_i {
+	st7735_adaptor_write_data_16_fn write_data_16;
+	st7735_adaptor_write_data_fn write_data;
+	st7735_adaptor_write_cmd_fn write_cmd;
 };
 
-struct ST7735_Screen {
-	const struct DrawingBoardInterface *drawing_board;
-	struct ST7735_ScreenAdaptorInterface **adaptor;
-	struct Point size;
+struct st7735_screen {
+	const struct drawing_i *drawing_board;
+	struct st7735_adaptor_i **adaptor;
+	struct point size;
 };
 
-void st7735_initialize(struct ST7735_Screen *self, struct ST7735_ScreenAdaptorInterface **adaptor);
-void st7735_set_address(struct ST7735_Screen *self, struct Point p1, struct Point p2);
+void st7735_initialize(struct st7735_screen *self, struct st7735_adaptor_i **adaptor);
+void st7735_set_address(struct st7735_screen *self, struct point p1, struct point p2);
 
 #endif

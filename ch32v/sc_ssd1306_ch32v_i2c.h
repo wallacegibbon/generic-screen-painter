@@ -3,11 +3,11 @@
 
 #include "sc_ssd1306.h"
 
-struct SSD1306_ScreenAdaptorCH32VI2C {
-	const struct SSD1306_ScreenAdaptorInterface *adaptor;
+struct ssd1306_adaptor_ch32v_i2c {
+	const struct ssd1306_adaptor_i *adaptor;
 	uint8_t address;
 };
 
-void ssd1306_adaptor_ch32v_i2c_initialize(struct SSD1306_ScreenAdaptorCH32VI2C *self, int address);
+void ssd1306_adaptor_ch32v_i2c_initialize(struct ssd1306_adaptor_ch32v_i2c *self, int address);
 
 #endif

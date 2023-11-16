@@ -2,17 +2,17 @@
 #include "sc_common.h"
 #include "sc_ssd1306_ch32v_i2c.h"
 
-void ssd1306_adaptor_ch32v_i2c_start_transmit(struct SSD1306_ScreenAdaptorCH32VI2C *self);
-void ssd1306_adaptor_ch32v_i2c_stop_transmit(struct SSD1306_ScreenAdaptorCH32VI2C *self);
-void ssd1306_adaptor_ch32v_i2c_write_byte(struct SSD1306_ScreenAdaptorCH32VI2C *self, uint8_t data);
+static void start_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
+static void stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
+static void write_byte(struct ssd1306_adaptor_ch32v_i2c *self, uint8_t data);
 
-static const struct SSD1306_ScreenAdaptorInterface adaptor_vtable = {
-	.start_transmit = (SSD1306_ScreenAdaptorStartTransmit)ssd1306_adaptor_ch32v_i2c_start_transmit,
-	.stop_transmit = (SSD1306_ScreenAdaptorStopTransmit)ssd1306_adaptor_ch32v_i2c_stop_transmit,
-	.write_byte = (SSD1306_ScreenAdaptorWriteByte)ssd1306_adaptor_ch32v_i2c_write_byte,
+static const struct ssd1306_adaptor_i adaptor_interface = {
+	.start_transmit = (ssd1306_adaptor_start_transmit_fn)start_transmit,
+	.stop_transmit = (ssd1306_adaptor_stop_transmit_fn)stop_transmit,
+	.write_byte = (ssd1306_adaptor_write_byte_fn)write_byte,
 };
 
-void ssd1306_adaptor_ch32v_i2c_start_transmit(struct SSD1306_ScreenAdaptorCH32VI2C *self) {
+static void start_transmit(struct ssd1306_adaptor_ch32v_i2c *self) {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY) != RESET)
 		;
 	I2C_GenerateSTART(I2C1, ENABLE);
@@ -25,19 +25,19 @@ void ssd1306_adaptor_ch32v_i2c_start_transmit(struct SSD1306_ScreenAdaptorCH32VI
 		;
 }
 
-void ssd1306_adaptor_ch32v_i2c_stop_transmit(struct SSD1306_ScreenAdaptorCH32VI2C *self) {
+static void stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self) {
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED))
 		;
 	I2C_GenerateSTOP(I2C1, ENABLE);
 }
 
-void ssd1306_adaptor_ch32v_i2c_write_byte(struct SSD1306_ScreenAdaptorCH32VI2C *self, uint8_t data) {
+static void write_byte(struct ssd1306_adaptor_ch32v_i2c *self, uint8_t data) {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_TXE) == RESET)
 		;
 	I2C_SendData(I2C1, data);
 }
 
-void ssd1306_adaptor_ch32v_i2c_initialize(struct SSD1306_ScreenAdaptorCH32VI2C *self, int address) {
+void ssd1306_adaptor_ch32v_i2c_initialize(struct ssd1306_adaptor_ch32v_i2c *self, int address) {
 	GPIO_InitTypeDef gpio_init = {0};
 	I2C_InitTypeDef i2c_init = {0};
 
@@ -69,6 +69,6 @@ void ssd1306_adaptor_ch32v_i2c_initialize(struct SSD1306_ScreenAdaptorCH32VI2C *
 
 	// I2C_AcknowledgeConfig(I2C1, ENABLE);
 
-	self->adaptor = &adaptor_vtable;
+	self->adaptor = &adaptor_interface;
 	self->address = address << 1;
 }

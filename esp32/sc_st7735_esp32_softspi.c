@@ -3,17 +3,17 @@
 #include "sc_common.h"
 #include "sc_st7735_esp32_softspi.h"
 
-void st7735_adaptor_esp32_soft_spi_write_data_16(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint16_t data);
-void st7735_adaptor_esp32_soft_spi_write_data(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data);
-void st7735_adaptor_esp32_soft_spi_write_cmd(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data);
+static void write_data_16(struct st7735_adaptor_esp32_soft_spi *self, uint16_t data);
+static void write_data(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data);
+static void write_cmd(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data);
 
-static const struct ST7735_ScreenAdaptorInterface adaptor_vtable = {
-	.write_data_16 = (ST7735_ScreenAdaptorWriteData16)st7735_adaptor_esp32_soft_spi_write_data_16,
-	.write_data = (ST7735_ScreenAdaptorWriteData)st7735_adaptor_esp32_soft_spi_write_data,
-	.write_cmd = (ST7735_ScreenAdaptorWriteCmd)st7735_adaptor_esp32_soft_spi_write_cmd,
+static const struct st7735_adaptor_i adaptor_interface = {
+	.write_data_16 = (st7735_adaptor_write_data_16_fn)write_data_16,
+	.write_data = (st7735_adaptor_write_data_fn)write_data,
+	.write_cmd = (st7735_adaptor_write_cmd_fn)write_cmd,
 };
 
-void st7735_adaptor_esp32_soft_spi_write_byte(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data) {
+static void write_byte(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data) {
 	int i;
 	ESP_ERROR_CHECK(gpio_set_level(self->cs_pin, 0));
 	for (i = 0; i < 8; i++) {
@@ -25,24 +25,24 @@ void st7735_adaptor_esp32_soft_spi_write_byte(struct ST7735_ScreenAdaptorESP32So
 	ESP_ERROR_CHECK(gpio_set_level(self->cs_pin, 1));
 }
 
-void st7735_adaptor_esp32_soft_spi_write_data_16(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint16_t data) {
+static void write_data_16(struct st7735_adaptor_esp32_soft_spi *self, uint16_t data) {
 	ESP_ERROR_CHECK(gpio_set_level(self->dc_pin, 1));
-	st7735_adaptor_esp32_soft_spi_write_byte(self, data >> 8);
-	st7735_adaptor_esp32_soft_spi_write_byte(self, data);
+	write_byte(self, data >> 8);
+	write_byte(self, data);
 }
 
-void st7735_adaptor_esp32_soft_spi_write_data(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data) {
+static void write_data(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data) {
 	ESP_ERROR_CHECK(gpio_set_level(self->dc_pin, 1));
-	st7735_adaptor_esp32_soft_spi_write_byte(self, data);
+	write_byte(self, data);
 }
 
-void st7735_adaptor_esp32_soft_spi_write_cmd(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t data) {
+static void write_cmd(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data) {
 	ESP_ERROR_CHECK(gpio_set_level(self->dc_pin, 0));
-	st7735_adaptor_esp32_soft_spi_write_byte(self, data);
+	write_byte(self, data);
 }
 
-void st7735_adaptor_esp32_soft_spi_initialize(struct ST7735_ScreenAdaptorESP32SoftSPI *self, uint8_t mosi_pin, uint8_t sclk_pin, uint8_t cs_pin, uint8_t rst_pin, uint8_t dc_pin) {
-	self->adaptor = &adaptor_vtable;
+void st7735_adaptor_esp32_soft_spi_initialize(struct st7735_adaptor_esp32_soft_spi *self, uint8_t mosi_pin, uint8_t sclk_pin, uint8_t cs_pin, uint8_t rst_pin, uint8_t dc_pin) {
+	self->adaptor = &adaptor_interface;
 
 	ESP_ERROR_CHECK(gpio_set_direction(mosi_pin, GPIO_MODE_OUTPUT));
 	ESP_ERROR_CHECK(gpio_set_direction(sclk_pin, GPIO_MODE_OUTPUT));

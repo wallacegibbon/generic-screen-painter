@@ -1,47 +1,47 @@
-#ifndef __POINT_ITERATOR_H
-#define __POINT_ITERATOR_H
+#ifndef __SC_POINT_ITERATOR_H
+#define __SC_POINT_ITERATOR_H
 
 #include "sc_common.h"
 
-typedef int (*PointIteratorNext)(void *iterator, struct Point *result);
+typedef int (*point_iter_next_fn)(void *iterator, struct point *result);
 
-struct PointIteratorInterface {
-	PointIteratorNext next;
+struct point_iter_i {
+	point_iter_next_fn next;
 };
 
 /// `self` can point to `LinePointIterator`, `RectPointIterator`, ...
-static inline int point_iterator_next(void *self, struct Point *result) {
-	return ((struct PointIteratorInterface *)self)->next(self, result);
+static inline int point_iter_next(void *self, struct point *result) {
+	return ((struct point_iter_i *)self)->next(self, result);
 }
 
-struct LinePointIterator {
-	struct PointIteratorInterface iterator;
-	struct Point destination;
-	struct Point cursor;
-	struct Point step;
-	struct Point delta;
-	struct Point acc;
+struct line_point_iter {
+	struct point_iter_i iterator;
+	struct point destination;
+	struct point cursor;
+	struct point step;
+	struct point delta;
+	struct point acc;
 	int distance;
 	int count;
 };
 
-struct RectPointIterator {
-	struct PointIteratorInterface iterator;
-	struct Point p1;
-	struct Point p2;
-	struct Point cursor;
+struct rect_point_iter {
+	struct point_iter_i iterator;
+	struct point p1;
+	struct point p2;
+	struct point cursor;
 };
 
-struct CirclePointIterator {
-	struct PointIteratorInterface iterator;
-	struct Point center;
+struct circle_point_iter {
+	struct point_iter_i iterator;
+	struct point center;
 	int radius;
 	int px;
 	int py;
 };
 
-void line_p_iterator_initialize(struct LinePointIterator *self, struct Point p1, struct Point p2);
-void rect_p_terator_initialize(struct RectPointIterator *self, struct Point p1, struct Point p2);
-void circle_p_iterator_initialize(struct CirclePointIterator *self, struct Point center, int radius);
+void line_p_iter_initialize(struct line_point_iter *self, struct point p1, struct point p2);
+void rect_p_iter_initialize(struct rect_point_iter *self, struct point p1, struct point p2);
+void circle_p_iter_initialize(struct circle_point_iter *self, struct point center, int radius);
 
 #endif

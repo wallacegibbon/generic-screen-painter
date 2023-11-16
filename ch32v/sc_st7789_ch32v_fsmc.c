@@ -3,30 +3,30 @@
 #include "sc_common.h"
 #include "sc_st7789_ch32v_fsmc.h"
 
-void st7789_adaptor_ch32v_fsmc_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data);
-void st7789_adaptor_ch32v_fsmc_write_data(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data);
-void st7789_screen_ch32v_fsmc_write_cmd(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd);
+static void write_data_16(struct st7789_adaptor_ch32v_fsmc *self, uint16_t data);
+static void write_data(struct st7789_adaptor_ch32v_fsmc *self, uint8_t data);
+static void write_cmd(struct st7789_adaptor_ch32v_fsmc *self, uint8_t cmd);
 
-static const struct ST7789_ScreenAdaptorInterface adaptor_vtable = {
-	.write_data_16 = (ST7789_ScreenAdaptorWriteData16)st7789_adaptor_ch32v_fsmc_write_data_16,
-	.write_data = (ST7789_ScreenAdaptorWriteData)st7789_adaptor_ch32v_fsmc_write_data,
-	.write_cmd = (ST7789_ScreenAdaptorWriteCmd)st7789_screen_ch32v_fsmc_write_cmd,
+static const struct st7789_adaptor_i adaptor_interface = {
+	.write_data_16 = (st7789_adaptor_write_data_16_fn)write_data_16,
+	.write_data = (st7789_adaptor_write_data_fn)write_data,
+	.write_cmd = (st7789_adaptor_write_cmd_fn)write_cmd,
 };
 
-void st7789_adaptor_ch32v_fsmc_write_data_16(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint16_t data) {
+static void write_data_16(struct st7789_adaptor_ch32v_fsmc *self, uint16_t data) {
 	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)(data >> 8);
 	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)data;
 }
 
-void st7789_adaptor_ch32v_fsmc_write_data(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t data) {
+static void write_data(struct st7789_adaptor_ch32v_fsmc *self, uint8_t data) {
 	*(volatile uint8_t *)ST7789_LCD_DATA = data;
 }
 
-void st7789_screen_ch32v_fsmc_write_cmd(struct ST7789_ScreenAdaptorCH32VFSMC *self, uint8_t cmd) {
+static void write_cmd(struct st7789_adaptor_ch32v_fsmc *self, uint8_t cmd) {
 	*(volatile uint8_t *)ST7789_LCD_CMD = cmd;
 }
 
-void st7789_screen_ch32v_fsmc_initialize(struct ST7789_ScreenAdaptorCH32VFSMC *self) {
+void st7789_adaptor_ch32v_fsmc_initialize(struct st7789_adaptor_ch32v_fsmc *self) {
 	GPIO_InitTypeDef gpio_init = {0};
 	FSMC_NORSRAMInitTypeDef fsmc_init = {0};
 	FSMC_NORSRAMTimingInitTypeDef read_write_timing = {0};
@@ -92,5 +92,5 @@ void st7789_screen_ch32v_fsmc_initialize(struct ST7789_ScreenAdaptorCH32VFSMC *s
 	FSMC_NORSRAMInit(&fsmc_init);
 	FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);
 
-	self->adaptor = &adaptor_vtable;
+	self->adaptor = &adaptor_interface;
 }
