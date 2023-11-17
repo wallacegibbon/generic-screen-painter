@@ -17,11 +17,11 @@ struct st7789_adaptor_i {
 
 struct st7789_screen {
 	const struct drawing_i *drawing_board;
-	struct st7789_adaptor_i **adaptor;
+	const struct st7789_adaptor_i **adaptor;
 	struct point size;
 };
 
-void st7789_initialize(struct st7789_screen *self, struct st7789_adaptor_i **adaptor);
+void st7789_initialize(struct st7789_screen *self, const struct st7789_adaptor_i **adaptor);
 void st7789_set_address(struct st7789_screen *self, struct point p1, struct point p2);
 
 #endif

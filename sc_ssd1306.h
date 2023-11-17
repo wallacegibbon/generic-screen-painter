@@ -16,7 +16,7 @@ struct ssd1306_adaptor_i {
 
 struct ssd1306_screen {
 	const struct drawing_i *drawing_board;
-	struct ssd1306_adaptor_i **adaptor;
+	const struct ssd1306_adaptor_i **adaptor;
 	struct point size;
 	/// just to hold some value since we don't have closure in C.
 	int clear_color;
@@ -27,7 +27,7 @@ struct ssd1306_screen {
 	uint8_t buffer[128][8];
 };
 
-void ssd1306_initialize(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor);
+void ssd1306_initialize(struct ssd1306_screen *self, const struct ssd1306_adaptor_i **adaptor);
 void ssd1306_fix_32row(struct ssd1306_screen *self);
 void ssd1306_set_brightness(struct ssd1306_screen *self, uint8_t value);
 void ssd1306_set_up_down_invert(struct ssd1306_screen *self);

@@ -167,7 +167,7 @@ void st7735_prepare(struct st7735_screen *self) {
 	st7735_write_cmd(self, 0x29);
 }
 
-void st7735_initialize(struct st7735_screen *self, struct st7735_adaptor_i **adaptor) {
+void st7735_initialize(struct st7735_screen *self, const struct st7735_adaptor_i **adaptor) {
 	memset(self, 0, sizeof(struct st7735_screen));
 
 	self->drawing_board = &drawing_interface;

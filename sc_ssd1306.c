@@ -225,7 +225,7 @@ void ssd1306_set_up_down_invert(struct ssd1306_screen *self) {
 	self->direction = !self->direction;
 }
 
-void ssd1306_initialize(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor) {
+void ssd1306_initialize(struct ssd1306_screen *self, const struct ssd1306_adaptor_i **adaptor) {
 	memset(self, 0, sizeof(struct ssd1306_screen));
 
 	self->drawing_board = &drawing_interface;

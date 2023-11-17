@@ -18,7 +18,7 @@ struct drawing_i {
 };
 
 struct painter {
-	struct drawing_i **drawing_board;
+	const struct drawing_i **drawing_board;
 };
 
 /// Core functionalities
