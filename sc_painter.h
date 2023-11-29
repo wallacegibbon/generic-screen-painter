@@ -21,6 +21,12 @@ struct painter {
 	const struct drawing_i **drawing_board;
 };
 
+struct text_painter {
+	struct painter *painter;
+	struct point pos;
+	struct color_pair color;
+};
+
 /// Core functionalities
 void painter_draw_point(struct painter *self, struct point p, int color);
 void painter_size(struct painter *self, struct point *p);
@@ -31,7 +37,9 @@ void painter_flush(struct painter *self);
 void painter_draw_line(struct painter *self, struct point p1, struct point p2, int color);
 void painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, int color);
 void painter_draw_circle(struct painter *self, struct point p, int r, int color);
-int painter_draw_char(struct painter *self, char ch, struct point pos, int size, struct color_pair color);
-int painter_draw_string(struct painter *self, char *str, struct point pos, int size, struct color_pair color);
+
+void text_painter_initialize(struct text_painter *self, struct painter *painter);
+int text_draw_char(struct text_painter *self, char ch, int size, struct point p);
+int text_draw_string(struct text_painter *self, char *str, int size);
 
 #endif

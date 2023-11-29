@@ -1,7 +1,6 @@
 #include "sc_ascii_font.h"
 #include "sc_painter.h"
 #include "sc_point_iterator.h"
-#include <assert.h>
 #include <stddef.h>
 
 static void dawing_board_fill_fallback(void *screen, struct point p1, struct point p2, int color) {
@@ -16,7 +15,6 @@ static void dawing_board_fill_fallback(void *screen, struct point p1, struct poi
 void painter_draw_point(struct painter *self, struct point p, int color) {
 	drawing_draw_point_fn fn;
 	fn = (*self->drawing_board)->draw_point;
-	assert(fn);
 	if (fn)
 		fn(self->drawing_board, p, color);
 }
@@ -24,7 +22,6 @@ void painter_draw_point(struct painter *self, struct point p, int color) {
 void painter_size(struct painter *self, struct point *p) {
 	drawing_size_fn fn;
 	fn = (*self->drawing_board)->size;
-	assert(fn);
 	if (fn)
 		fn(self->drawing_board, p);
 }
@@ -94,56 +91,72 @@ void painter_draw_circle(struct painter *self, struct point p, int radius, int c
 	}
 }
 
-static int painter_draw_char_byte(struct painter *self, uint8_t byte, int x, int y, struct color_pair color) {
+void text_painter_initialize(struct text_painter *self, struct painter *painter) {
+	self->painter = painter;
+}
+
+static void draw_char_byte(struct text_painter *self, uint8_t byte, struct point pos) {
 	struct point p;
 	int i, c;
 	for (i = 0; i < 8; i++) {
-		c = byte & 0x80 ? color.foreground : color.background;
-		point_initialize(&p, x + i, y);
-		painter_draw_point(self, p, c);
+		c = byte & 0x80 ? self->color.foreground : self->color.background;
+		point_initialize(&p, pos.x + i, pos.y);
+		painter_draw_point(self->painter, p, c);
 		byte <<= 1;
 	}
-	return 1;
 }
 
-static int painter_draw_char_16(struct painter *self, int idx, struct point pos, const uint8_t *buffer, struct color_pair color) {
+static int draw_char_16(struct text_painter *self, int idx, struct point pos) {
+	const uint8_t *buffer;
+	struct point p;
 	int i;
 
-	for (i = 0; i < 16; i++)
-		painter_draw_char_byte(self, buffer[idx * 16 + i], pos.x, pos.y + i, color);
-
-	return 1;
-}
-
-static int painter_draw_char_32(struct painter *self, int idx, struct point pos, const uint16_t *buffer, struct color_pair color) {
-	int i, t;
-	for (i = 0; i < 32; i++) {
-		t = buffer[idx * 32 + i];
-		painter_draw_char_byte(self, t & 0xFF, pos.x, pos.y + i, color);
-		painter_draw_char_byte(self, t >> 8, pos.x + 8, pos.y + i, color);
+	buffer = ascii_1608;
+	for (i = 0; i < 16; i++) {
+		point_initialize(&p, pos.x, pos.y + i);
+		draw_char_byte(self, buffer[idx * 16 + i], p);
 	}
 	return 1;
 }
 
-int painter_draw_char(struct painter *self, char ch, struct point pos, int size, struct color_pair color) {
+static int draw_char_32(struct text_painter *self, int idx, struct point pos) {
+	const uint16_t *buffer;
+	struct point p;
+	int i, t;
+
+	buffer = (const uint16_t *)ascii_3216;
+	for (i = 0; i < 32; i++) {
+		t = buffer[idx * 32 + i];
+		point_initialize(&p, pos.x, pos.y + i);
+		draw_char_byte(self, t & 0xFF, p);
+		point_initialize(&p, pos.x + 8, pos.y + i);
+		draw_char_byte(self, t >> 8, p);
+	}
+	return 1;
+}
+
+int text_draw_char(struct text_painter *self, char ch, int size, struct point p) {
 	int idx = ch - ' ';
 	if (size == 32)
-		return painter_draw_char_32(self, idx, pos, (const uint16_t *)ascii_3216, color);
+		return draw_char_32(self, idx, p);
 	if (size == 16)
-		return painter_draw_char_16(self, idx, pos, ascii_1608, color);
+		return draw_char_16(self, idx, p);
 
 	return 0;
 }
 
-int painter_draw_string(struct painter *self, char *str, struct point pos, int size, struct color_pair color) {
-	/// You can make the padding an argument if you want.
-	int padding = 0;
-	int char_width = size / 2;
-	int c = *str;
-	int cnt = 0;
+int text_draw_string(struct text_painter *self, char *str, int size) {
+	int padding, char_width, c, cnt;
+	struct point p;
 
-	for (; c; pos.x += char_width + padding, c = *++str)
-		cnt += painter_draw_char(self, c, pos, size, color);
+	/// You can make the padding an argument if you want.
+	padding = 0;
+	char_width = size / 2;
+
+	point_initialize(&p, self->pos.x, self->pos.y);
+
+	for (c = *str, cnt = 0; c; p.x += char_width + padding, c = *++str)
+		cnt += text_draw_char(self, c, size, p);
 
 	return cnt;
 }
