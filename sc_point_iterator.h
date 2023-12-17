@@ -9,13 +9,12 @@ struct point_iter_i {
 	point_iter_next_fn next;
 };
 
-/// `self` can point to `LinePointIterator`, `RectPointIterator`, ...
 static inline int point_iter_next(void *self, struct point *result) {
-	return ((struct point_iter_i *)self)->next(self, result);
+	return (*(struct point_iter_i **)self)->next(self, result);
 }
 
 struct line_point_iter {
-	struct point_iter_i iterator;
+	const struct point_iter_i *iterator;
 	struct point destination;
 	struct point cursor;
 	struct point step;
@@ -26,14 +25,14 @@ struct line_point_iter {
 };
 
 struct rect_point_iter {
-	struct point_iter_i iterator;
+	const struct point_iter_i *iterator;
 	struct point p1;
 	struct point p2;
 	struct point cursor;
 };
 
 struct circle_point_iter {
-	struct point_iter_i iterator;
+	const struct point_iter_i *iterator;
 	struct point center;
 	int radius;
 	int px;
