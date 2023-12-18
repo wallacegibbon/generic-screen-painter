@@ -3,7 +3,7 @@
 #include "sc_point_iterator.h"
 #include <stddef.h>
 
-static void dawing_board_fill_fallback(void *screen, struct point p1, struct point p2, int color) {
+static void dawing_board_fill_fallback(void *screen, struct point p1, struct point p2, uint32_t color) {
 	struct rect_point_iter point_iterator;
 	struct point p;
 
@@ -12,7 +12,7 @@ static void dawing_board_fill_fallback(void *screen, struct point p1, struct poi
 		(*(struct drawing_i **)screen)->draw_point(screen, p, color);
 }
 
-void painter_draw_point(struct painter *self, struct point p, int color) {
+void painter_draw_point(struct painter *self, struct point p, uint32_t color) {
 	drawing_draw_point_fn fn;
 	fn = (*self->drawing_board)->draw_point;
 	if (fn)
@@ -26,7 +26,7 @@ void painter_size(struct painter *self, struct point *p) {
 		fn(self->drawing_board, p);
 }
 
-void painter_fill(struct painter *self, struct point p1, struct point p2, int color) {
+void painter_fill(struct painter *self, struct point p1, struct point p2, uint32_t color) {
 	drawing_fill_fn fn;
 	fn = (*self->drawing_board)->fill;
 	if (fn)
@@ -35,14 +35,14 @@ void painter_fill(struct painter *self, struct point p1, struct point p2, int co
 		dawing_board_fill_fallback(self->drawing_board, p1, p2, color);
 }
 
-void painter_fill_whole(struct painter *self, int color) {
+void painter_fill_whole(struct painter *self, uint32_t color) {
 	struct point p1, p2;
 	point_initialize(&p1, 0, 0);
 	painter_size(self, &p2);
 	painter_fill(self, p1, p2, color);
 }
 
-void painter_clear(struct painter *self, int color) {
+void painter_clear(struct painter *self, uint32_t color) {
 	drawing_clear_fn fn;
 	fn = (*self->drawing_board)->clear;
 	if (fn)
@@ -58,7 +58,7 @@ void painter_flush(struct painter *self) {
 		fn(self->drawing_board);
 }
 
-void painter_draw_line(struct painter *self, struct point p1, struct point p2, int color) {
+void painter_draw_line(struct painter *self, struct point p1, struct point p2, uint32_t color) {
 	struct line_point_iter point_iterator;
 	struct point p;
 
@@ -67,7 +67,7 @@ void painter_draw_line(struct painter *self, struct point p1, struct point p2, i
 		painter_draw_point(self, p, color);
 }
 
-void painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, int color) {
+void painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, uint32_t color) {
 	struct point tmp;
 
 	point_initialize(&tmp, p2.x, p1.y);
@@ -79,7 +79,7 @@ void painter_draw_rectangle(struct painter *self, struct point p1, struct point 
 	painter_draw_line(self, tmp, p1, color);
 }
 
-void painter_draw_circle(struct painter *self, struct point p, int radius, int color) {
+void painter_draw_circle(struct painter *self, struct point p, int radius, uint32_t color) {
 	struct circle_point_iter point_iterator;
 	struct point buffer[8];
 	int i;

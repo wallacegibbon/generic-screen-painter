@@ -6,9 +6,9 @@
 #define SSD1306_CTRL_WRITE_DATA_SINGLE 0xC0
 #define SSD1306_CTRL_WRITE_DATA_MULTI 0x40
 
-void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, int color);
+void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, uint32_t color);
 void ssd1306_size(struct ssd1306_screen *self, struct point *p);
-void ssd1306_clear(struct ssd1306_screen *self, int color);
+void ssd1306_clear(struct ssd1306_screen *self, uint32_t color);
 void ssd1306_flush(struct ssd1306_screen *self);
 
 static const struct drawing_i drawing_interface = {
@@ -123,7 +123,7 @@ void ssd1306_draw_cell(struct ssd1306_screen *self, int x, int page_idx, int cel
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, int color) {
+void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, uint32_t color) {
 	int page_idx, byte_idx, tmp;
 
 	if (p.x >= self->size.x || p.y >= self->size.y)
@@ -185,7 +185,7 @@ void ssd1306_flush(struct ssd1306_screen *self) {
 	ssd1306_iterate(self, ssd1306_page_byte);
 }
 
-void ssd1306_clear(struct ssd1306_screen *self, int color) {
+void ssd1306_clear(struct ssd1306_screen *self, uint32_t color) {
 	/// `self->clear_color` represents a page, not a point.
 	self->clear_color = color ? 0xFF : 0;
 	ssd1306_iterate(self, ssd1306_page_byte_empty);

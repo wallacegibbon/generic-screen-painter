@@ -3,9 +3,9 @@
 
 #include "sc_common.h"
 
-typedef void (*drawing_draw_point_fn)(void *screen, struct point p, int color);
-typedef void (*drawing_fill_fn)(void *screen, struct point p1, struct point p2, int color);
-typedef void (*drawing_clear_fn)(void *screen, int color);
+typedef void (*drawing_draw_point_fn)(void *screen, struct point p, uint32_t color);
+typedef void (*drawing_fill_fn)(void *screen, struct point p1, struct point p2, uint32_t color);
+typedef void (*drawing_clear_fn)(void *screen, uint32_t color);
 typedef void (*drawing_size_fn)(void *screen, struct point *p);
 typedef void (*drawing_flush_fn)(void *screen);
 
@@ -28,15 +28,15 @@ struct text_painter {
 };
 
 /// Core functionalities
-void painter_draw_point(struct painter *self, struct point p, int color);
+void painter_draw_point(struct painter *self, struct point p, uint32_t color);
 void painter_size(struct painter *self, struct point *p);
-void painter_clear(struct painter *self, int color);
+void painter_clear(struct painter *self, uint32_t color);
 void painter_flush(struct painter *self);
 
 /// Draw methods
-void painter_draw_line(struct painter *self, struct point p1, struct point p2, int color);
-void painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, int color);
-void painter_draw_circle(struct painter *self, struct point p, int r, int color);
+void painter_draw_line(struct painter *self, struct point p1, struct point p2, uint32_t color);
+void painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, uint32_t color);
+void painter_draw_circle(struct painter *self, struct point p, int r, uint32_t color);
 
 void text_painter_initialize(struct text_painter *self, struct painter *painter);
 int text_draw_char(struct text_painter *self, char ch, int size, struct point p);

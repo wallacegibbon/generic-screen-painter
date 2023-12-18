@@ -20,8 +20,8 @@ struct line_point_iter {
 	struct point step;
 	struct point delta;
 	struct point acc;
-	int distance;
-	int count;
+	uint16_t distance;
+	uint16_t count;
 };
 
 struct rect_point_iter {

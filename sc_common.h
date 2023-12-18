@@ -1,6 +1,8 @@
 #ifndef __SC_COMMON_H
 #define __SC_COMMON_H
 
+#include <stdint.h>
+
 struct point {
 	int x, y;
 };
@@ -11,11 +13,11 @@ static inline void point_initialize(struct point *self, int x, int y) {
 }
 
 struct color_pair {
-	int foreground;
-	int background;
+	uint32_t foreground;
+	uint32_t background;
 };
 
-static inline void color_pair_initialize(struct color_pair *self, int f, int b) {
+static inline void color_pair_initialize(struct color_pair *self, uint32_t f, uint32_t b) {
 	self->foreground = f;
 	self->background = b;
 }

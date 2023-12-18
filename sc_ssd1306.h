@@ -19,7 +19,7 @@ struct ssd1306_screen {
 	const struct ssd1306_adaptor_i **adaptor;
 	struct point size;
 	/// just to hold some value since we don't have closure in C.
-	int clear_color;
+	uint32_t clear_color;
 	uint8_t direction;
 	uint8_t auto_flush;
 	/// SSD1306 support 128x32 mode

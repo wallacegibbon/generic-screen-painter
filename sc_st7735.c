@@ -3,9 +3,9 @@
 #include <stddef.h>
 #include <string.h>
 
-void st7735_draw_point(struct st7735_screen *self, struct point p, int color);
+void st7735_draw_point(struct st7735_screen *self, struct point p, uint32_t color);
 void st7735_size(struct st7735_screen *self, struct point *p);
-void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, int color);
+void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, uint32_t color);
 
 static const struct drawing_i drawing_interface = {
 	.draw_point = (drawing_draw_point_fn)st7735_draw_point,
@@ -40,7 +40,7 @@ void st7735_set_address(struct st7735_screen *self, struct point p1, struct poin
 	st7735_write_cmd(self, 0x2C);
 }
 
-void st7735_draw_point(struct st7735_screen *self, struct point p, int color) {
+void st7735_draw_point(struct st7735_screen *self, struct point p, uint32_t color) {
 	if (p.x >= self->size.x || p.y >= self->size.y)
 		return;
 
@@ -54,7 +54,7 @@ void st7735_size(struct st7735_screen *self, struct point *p) {
 
 /// The default `fill` calls `draw_point`, which will cause many
 /// unnecessary `set_address` invocations.
-void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, int color) {
+void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, uint32_t color) {
 	int n = ABS((p1.x - p2.x) * (p1.y - p2.y));
 
 	st7735_set_address(self, p1, p2);
