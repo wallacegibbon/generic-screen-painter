@@ -24,10 +24,10 @@ static inline void color_pair_initialize(struct color_pair *self, uint32_t f, ui
 
 void delay(int milliseconds);
 
-#define MAX(a, b) (a > b ? a : b)
-#define MIN(a, b) (a > b ? b : a)
-#define ABS(a) (a < 0 ? -a : a)
-#define UNIT_VAL(a) (a < 0 ? -1 : 1)
-#define SQUARE(a) (a * a)
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) > (b) ? (b) : (a))
+#define ABS(a) ((a) < 0 ? -(a) : (a))
+#define UNIT_VAL(a) ((a) < 0 ? -1 : 1)
+#define SQUARE(a) ((a) * (a))
 
 #endif

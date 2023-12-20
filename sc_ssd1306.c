@@ -1,3 +1,4 @@
+#include "sc_color.h"
 #include "sc_ssd1306.h"
 #include <string.h>
 
@@ -129,8 +130,7 @@ void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, uint32_t co
 	if (p.x >= self->size.x || p.y >= self->size.y)
 		return;
 
-	/// SSD1306 is mono color, this can handle wrong arguements
-	color = color ? 1 : 0;
+	color = color_to_1bit(color);
 
 	page_idx = p.y / 8;
 	byte_idx = p.y % 8;

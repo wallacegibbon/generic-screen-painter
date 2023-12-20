@@ -1,3 +1,4 @@
+#include "sc_color.h"
 #include "sc_point_iterator.h"
 #include "sc_st7735.h"
 #include <stddef.h>
@@ -45,7 +46,7 @@ void st7735_draw_point(struct st7735_screen *self, struct point p, uint32_t colo
 		return;
 
 	st7735_set_address(self, p, p);
-	st7735_write_data_16(self, (uint16_t)color);
+	st7735_write_data_16(self, color_to_16bit(color));
 }
 
 void st7735_size(struct st7735_screen *self, struct point *p) {
@@ -59,7 +60,7 @@ void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, u
 
 	st7735_set_address(self, p1, p2);
 	while (n--)
-		st7735_write_data_16(self, (uint16_t)color);
+		st7735_write_data_16(self, color_to_16bit(color));
 }
 
 void st7735_prepare(struct st7735_screen *self) {

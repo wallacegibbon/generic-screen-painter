@@ -1,29 +1,33 @@
 #ifndef __SC_COLOR_H
 #define __SC_COLOR_H
 
-#define WHITE_16bit 0xFFFF
-#define BLACK_16bit 0x0000
-#define BLUE_16bit 0x001F
-#define BRED_16bit 0XF81F
-#define GRED_16bit 0XFFE0
-#define GBLUE_16bit 0X07FF
-#define RED_16bit 0xF800
-#define MAGENTA_16bit 0xF81F
-#define GREEN_16bit 0x07E0
-#define CYAN_16bit 0x7FFF
-#define YELLOW_16bit 0xFFE0
-#define BROWN_16bit 0XBC40
-#define BRRED_16bit 0XFC07 /// maroon
-#define GRAY_16bit 0X8430
-#define DARKBLUE_16bit 0X01CF
-#define LIGHTBLUE_16bit 0X7D7C
-#define GRAYBLUE_16bit 0X5458
-#define LIGHTGREEN_16bit 0X841F
-#define LGRAY_16bit 0XC618
-#define LGRAYBLUE_16bit 0XA651
-#define LBBLUE_16bit 0X2B12
+#include <stdint.h>
 
-#define WHITE_1bit 1
-#define BLACK_1bit 0
+static inline uint16_t color_to_16bit(uint32_t color) {
+        return ((color & 0xF80000) >> 8) | ((color & 0x00F800) >> 5) | ((color & 0x0000F8) >> 3);
+}
+
+static inline uint8_t color_to_1bit(uint32_t color) {
+	return color ? 1 : 0;
+}
+
+#define WHITE_24bit 0xFFFFFF
+#define BLACK_24bit 0x000000
+#define RED_24bit 0xFF0000
+#define GREEN_24bit 0x00FF00
+#define BLUE_24bit 0x0000FF
+#define CYAN_24bit 0x00FFFF
+#define MAGENTA_24bit 0xFF00FF
+#define YELLOW_24bit 0xFFFF00
+#define BROWN_24bit 0xB88800
+#define BRRED_24bit 0xF88038 /// maroon
+#define GRAY_24bit 0x808480
+#define DARKBLUE_24bit 0x003878
+#define LIGHTBLUE_24bit 0x78CCE0
+#define GRAYBLUE_24bit 0x5088C0
+#define LIGHTGREEN_24bit 0x8080FF
+#define LGRAY_24bit 0xC0C0C0
+#define LGRAYBLUE_24bit 0xA0C888
+#define LBBLUE_24bit 0x286090
 
 #endif

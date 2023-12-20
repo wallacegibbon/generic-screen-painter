@@ -1,3 +1,4 @@
+#include "sc_color.h"
 #include "sc_point_iterator.h"
 #include "sc_st7789.h"
 #include <stddef.h>
@@ -45,7 +46,7 @@ void st7789_draw_point(struct st7789_screen *self, struct point p, uint32_t colo
 		return;
 
 	st7789_set_address(self, p, p);
-	st7789_write_data_16(self, (uint16_t)color);
+	st7789_write_data_16(self, color_to_16bit(color));
 }
 
 void st7789_size(struct st7789_screen *self, struct point *p) {
@@ -59,7 +60,7 @@ void st7789_fill(struct st7789_screen *self, struct point p1, struct point p2, u
 
 	st7789_set_address(self, p1, p2);
 	while (n--)
-		st7789_write_data_16(self, (uint16_t)color);
+		st7789_write_data_16(self, color_to_16bit(color));
 }
 
 void st7789_prepare(struct st7789_screen *self) {
