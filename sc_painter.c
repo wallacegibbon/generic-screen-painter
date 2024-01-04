@@ -92,14 +92,14 @@ void painter_draw_circle(struct painter *self, struct point p, int radius, uint3
 	}
 }
 
-void painter_draw_bezier(struct painter *self, struct point start, struct point end, struct point control, uint32_t color, int debug) {
+void painter_draw_bezier(struct painter *self, struct point start, struct point end, struct point control, uint32_t color) {
 	struct bezier1_point_iter point_iterator;
 	struct point p;
 
-	if (debug) {
-		painter_draw_line(self, start, control, GRAY_24bit);
-		painter_draw_line(self, control, end, GRAY_24bit);
-	}
+#ifdef BEZIER_DEBUG
+	painter_draw_line(self, start, control, GRAY_24bit);
+	painter_draw_line(self, control, end, GRAY_24bit);
+#endif
 
 	bezier1_p_iter_initialize(&point_iterator, start, end, control);
 	while (point_iter_next(&point_iterator, &p))
