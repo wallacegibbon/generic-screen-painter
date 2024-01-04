@@ -141,6 +141,5 @@ int bezier1_p_iter_next(struct bezier1_point_iter *self, struct point *result) {
 	result->x = value_by_percent(xa, xb, percent);
 	result->y = value_by_percent(ya, yb, percent);
 
-	printf("%d, %d\n", result->x, result->y);
 	self->percent += self->step;
 }
