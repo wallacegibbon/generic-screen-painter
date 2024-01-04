@@ -37,6 +37,7 @@ void painter_flush(struct painter *self);
 void painter_draw_line(struct painter *self, struct point p1, struct point p2, uint32_t color);
 void painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, uint32_t color);
 void painter_draw_circle(struct painter *self, struct point p, int r, uint32_t color);
+void painter_draw_bezier(struct painter *self, struct point start, struct point end, struct point control, uint32_t color, int debug);
 
 void text_painter_initialize(struct text_painter *self, struct painter *painter);
 int text_draw_char(struct text_painter *self, char ch, int size, struct point p);

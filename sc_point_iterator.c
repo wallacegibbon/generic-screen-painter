@@ -104,3 +104,43 @@ int circle_p_iter_next(struct circle_point_iter *self, struct point *buffer) {
 
 	return 1;
 }
+
+int bezier1_p_iter_next(struct bezier1_point_iter *self, struct point *result);
+
+static const struct point_iter_i bezier1_p_interface = {
+	.next = (point_iter_next_fn)bezier1_p_iter_next,
+};
+
+void bezier1_p_iter_initialize(struct bezier1_point_iter *self, struct point start, struct point end, struct point control) {
+	self->iterator = &bezier1_p_interface;
+	self->start = start;
+	self->end = end;
+	self->control = control;
+	self->percent = 0;
+	self->step = 0.001;
+};
+
+static inline int value_by_percent(int n1, int n2, float percent) {
+	return n1 + ((n2 - n1) * percent);
+}
+
+int bezier1_p_iter_next(struct bezier1_point_iter *self, struct point *result) {
+	int xa, xb, ya, yb;
+	float percent;
+
+	if (self->percent >= 1)
+		return 0;
+
+	percent = self->percent;
+
+	xa = value_by_percent(self->start.x, self->control.x, percent);
+	ya = value_by_percent(self->start.y, self->control.y, percent);
+	xb = value_by_percent(self->control.x, self->end.x, percent);
+	yb = value_by_percent(self->control.y, self->end.y, percent);
+
+	result->x = value_by_percent(xa, xb, percent);
+	result->y = value_by_percent(ya, yb, percent);
+
+	printf("%d, %d\n", result->x, result->y);
+	self->percent += self->step;
+}

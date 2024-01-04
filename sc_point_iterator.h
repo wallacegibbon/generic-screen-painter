@@ -39,8 +39,18 @@ struct circle_point_iter {
 	int py;
 };
 
+struct bezier1_point_iter {
+	const struct point_iter_i *iterator;
+	struct point start;
+	struct point end;
+	struct point control;
+	float percent;
+	float step;
+};
+
 void line_p_iter_initialize(struct line_point_iter *self, struct point p1, struct point p2);
 void rect_p_iter_initialize(struct rect_point_iter *self, struct point p1, struct point p2);
 void circle_p_iter_initialize(struct circle_point_iter *self, struct point center, int radius);
+void bezier1_p_iter_initialize(struct bezier1_point_iter *self, struct point start, struct point end, struct point control);
 
 #endif
