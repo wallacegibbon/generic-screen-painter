@@ -20,7 +20,7 @@ void sdlv1_draw_point(struct sdlv1_screen *self, struct point p, uint32_t color)
 	pixel = (uint8_t *)self->surface->pixels + p.y * self->surface->pitch + p.x * bpp;
 
 	// color = SDL_MapRGB(self->surface->format, 0xFF, 0, 0);
-	memcpy(pixel, &color, self->surface->format->BytesPerPixel);
+	memcpy(pixel, &color, bpp);
 }
 
 void sdlv1_size(struct sdlv1_screen *self, struct point *p) {
