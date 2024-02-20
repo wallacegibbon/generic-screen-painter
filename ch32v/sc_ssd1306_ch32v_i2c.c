@@ -1,6 +1,7 @@
+#include "sc_ssd1306_ch32v_i2c.h"
 #include "sc_ch32v_i2c.h"
 #include "sc_common.h"
-#include "sc_ssd1306_ch32v_i2c.h"
+#include "sc_ssd1306.h"
 
 static void start_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
 static void stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
@@ -69,6 +70,6 @@ void ssd1306_adaptor_ch32v_i2c_initialize(struct ssd1306_adaptor_ch32v_i2c *self
 
 	// I2C_AcknowledgeConfig(I2C1, ENABLE);
 
-	self->adaptor = &adaptor_interface;
+	self->adaptor = (struct ssd1306_adaptor_i *)&adaptor_interface;
 	self->address = address << 1;
 }

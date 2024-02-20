@@ -8,7 +8,7 @@
 #define ST7789_LCD_DATA ((uintptr_t)0x60020000)
 
 struct st7789_adaptor_ch32v_fsmc {
-	const struct st7789_adaptor_i *adaptor;
+	struct st7789_adaptor_i *adaptor;
 };
 
 void st7789_adaptor_ch32v_fsmc_initialize(struct st7789_adaptor_ch32v_fsmc *self);

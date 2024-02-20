@@ -6,7 +6,7 @@
 #include <SDL.h>
 
 struct sdlv1_screen {
-	const struct drawing_i *drawing_board;
+	struct drawing_i *drawing_board;
 	struct point size;
 	SDL_Surface *surface;
 };

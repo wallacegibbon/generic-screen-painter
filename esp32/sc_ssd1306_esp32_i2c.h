@@ -6,7 +6,7 @@
 #include "sc_ssd1306.h"
 
 struct ssd1306_adaptor_esp32_i2c {
-	const struct ssd1306_adaptor_i *adaptor;
+	struct ssd1306_adaptor_i *adaptor;
 	i2c_cmd_handle_t cmd_handle;
 	i2c_port_t i2c_num;
 	uint8_t address;

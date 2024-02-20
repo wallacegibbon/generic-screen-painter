@@ -1,4 +1,5 @@
 #include "esp_log.h"
+#include "sc_ssd1306.h"
 #include "sc_ssd1306_esp32_i2c.h"
 
 static void start_transmit(struct ssd1306_adaptor_esp32_i2c *self);
@@ -30,7 +31,7 @@ static void write_byte(struct ssd1306_adaptor_esp32_i2c *self, uint8_t data) {
 void ssd1306_adaptor_esp32_i2c_initialize(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num) {
 	i2c_config_t config;
 
-	self->adaptor = &adaptor_interface;
+	self->adaptor = (struct ssd1306_adaptor_i *)&adaptor_interface;
 	self->address = address << 1;
 	self->i2c_num = i2c_num;
 

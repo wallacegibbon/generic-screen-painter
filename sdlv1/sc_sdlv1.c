@@ -1,5 +1,6 @@
-#include "sc_point_iterator.h"
 #include "sc_sdlv1.h"
+#include "sc_painter.h"
+#include "sc_point_iterator.h"
 #include <stdlib.h>
 
 void sdlv1_draw_point(struct sdlv1_screen *self, struct point p, uint32_t color);
@@ -37,7 +38,7 @@ void sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, uin
 }
 
 void sdlv1_initialize(struct sdlv1_screen *self, SDL_Surface *surface, int w, int h) {
-	self->drawing_board = &drawing_interface;
+	self->drawing_board = (struct drawing_i *)&drawing_interface;
 	self->surface = surface;
 	self->size.x = w;
 	self->size.y = h;

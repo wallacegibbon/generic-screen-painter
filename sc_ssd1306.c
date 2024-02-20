@@ -1,5 +1,6 @@
-#include "sc_color.h"
 #include "sc_ssd1306.h"
+#include "sc_color.h"
+#include "sc_painter.h"
 #include <string.h>
 
 #define SSD1306_CTRL_WRITE_CMD_SINGLE 0x80
@@ -225,10 +226,10 @@ void ssd1306_set_up_down_invert(struct ssd1306_screen *self) {
 	self->direction = !self->direction;
 }
 
-void ssd1306_initialize(struct ssd1306_screen *self, const struct ssd1306_adaptor_i **adaptor) {
+void ssd1306_initialize(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor) {
 	memset(self, 0, sizeof(struct ssd1306_screen));
 
-	self->drawing_board = &drawing_interface;
+	self->drawing_board = (struct drawing_i *)&drawing_interface;
 	self->adaptor = adaptor;
 
 	self->size.x = 128;

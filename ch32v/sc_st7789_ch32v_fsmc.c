@@ -1,7 +1,8 @@
+#include "sc_st7789_ch32v_fsmc.h"
 #include "ch32v30x_fsmc.h"
 #include "ch32v30x_gpio.h"
 #include "sc_common.h"
-#include "sc_st7789_ch32v_fsmc.h"
+#include "sc_st7789.h"
 
 static void write_data_16(struct st7789_adaptor_ch32v_fsmc *self, uint16_t data);
 static void write_data(struct st7789_adaptor_ch32v_fsmc *self, uint8_t data);
@@ -92,5 +93,5 @@ void st7789_adaptor_ch32v_fsmc_initialize(struct st7789_adaptor_ch32v_fsmc *self
 	FSMC_NORSRAMInit(&fsmc_init);
 	FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);
 
-	self->adaptor = &adaptor_interface;
+	self->adaptor = (struct st7789_adaptor_i *)&adaptor_interface;
 }

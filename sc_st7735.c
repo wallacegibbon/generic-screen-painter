@@ -1,6 +1,7 @@
-#include "sc_color.h"
-#include "sc_point_iterator.h"
 #include "sc_st7735.h"
+#include "sc_color.h"
+#include "sc_painter.h"
+#include "sc_point_iterator.h"
 #include <stddef.h>
 #include <string.h>
 
@@ -168,10 +169,10 @@ void st7735_prepare(struct st7735_screen *self) {
 	st7735_write_cmd(self, 0x29);
 }
 
-void st7735_initialize(struct st7735_screen *self, const struct st7735_adaptor_i **adaptor) {
+void st7735_initialize(struct st7735_screen *self, struct st7735_adaptor_i **adaptor) {
 	memset(self, 0, sizeof(struct st7735_screen));
 
-	self->drawing_board = &drawing_interface;
+	self->drawing_board = (struct drawing_i *)&drawing_interface;
 	self->adaptor = adaptor;
 
 	self->size.x = 160;

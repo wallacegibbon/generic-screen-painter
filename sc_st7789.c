@@ -1,6 +1,7 @@
-#include "sc_color.h"
-#include "sc_point_iterator.h"
 #include "sc_st7789.h"
+#include "sc_color.h"
+#include "sc_painter.h"
+#include "sc_point_iterator.h"
 #include <stddef.h>
 #include <string.h>
 
@@ -160,10 +161,10 @@ void st7789_prepare(struct st7789_screen *self) {
 	st7789_write_cmd(self, 0x29);
 }
 
-void st7789_initialize(struct st7789_screen *self, const struct st7789_adaptor_i **adaptor) {
+void st7789_initialize(struct st7789_screen *self, struct st7789_adaptor_i **adaptor) {
 	memset(self, 0, sizeof(struct st7789_screen));
 
-	self->drawing_board = &drawing_interface;
+	self->drawing_board = (struct drawing_i *)&drawing_interface;
 	self->adaptor = adaptor;
 
 	self->size.x = 240;

@@ -4,7 +4,7 @@
 #include "sc_st7735.h"
 
 struct st7735_adaptor_esp32_soft_spi {
-	const struct st7735_adaptor_i *adaptor;
+	struct st7735_adaptor_i *adaptor;
 	uint8_t mosi_pin;
 	uint8_t sclk_pin;
 	uint8_t cs_pin;

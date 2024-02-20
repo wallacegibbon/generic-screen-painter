@@ -14,7 +14,7 @@ static inline int point_iter_next(void *self, struct point *result) {
 }
 
 struct line_point_iter {
-	const struct point_iter_i *iterator;
+	struct point_iter_i *iterator;
 	struct point destination;
 	struct point cursor;
 	struct point step;
@@ -25,14 +25,14 @@ struct line_point_iter {
 };
 
 struct rect_point_iter {
-	const struct point_iter_i *iterator;
+	struct point_iter_i *iterator;
 	struct point p1;
 	struct point p2;
 	struct point cursor;
 };
 
 struct circle_point_iter {
-	const struct point_iter_i *iterator;
+	struct point_iter_i *iterator;
 	struct point center;
 	int radius;
 	int px;
@@ -40,7 +40,7 @@ struct circle_point_iter {
 };
 
 struct bezier1_point_iter {
-	const struct point_iter_i *iterator;
+	struct point_iter_i *iterator;
 	struct point start;
 	struct point end;
 	struct point control;

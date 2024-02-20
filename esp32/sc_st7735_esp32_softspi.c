@@ -1,7 +1,7 @@
+#include "sc_st7735_esp32_softspi.h"
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
 #include "sc_common.h"
-#include "sc_st7735_esp32_softspi.h"
 
 static void write_data_16(struct st7735_adaptor_esp32_soft_spi *self, uint16_t data);
 static void write_data(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data);
@@ -42,7 +42,7 @@ static void write_cmd(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data) 
 }
 
 void st7735_adaptor_esp32_soft_spi_initialize(struct st7735_adaptor_esp32_soft_spi *self, uint8_t mosi_pin, uint8_t sclk_pin, uint8_t cs_pin, uint8_t rst_pin, uint8_t dc_pin) {
-	self->adaptor = &adaptor_interface;
+	self->adaptor = (struct st7735_adaptor_i *)&adaptor_interface;
 
 	ESP_ERROR_CHECK(gpio_set_direction(mosi_pin, GPIO_MODE_OUTPUT));
 	ESP_ERROR_CHECK(gpio_set_direction(sclk_pin, GPIO_MODE_OUTPUT));

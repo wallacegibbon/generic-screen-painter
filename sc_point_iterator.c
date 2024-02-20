@@ -10,7 +10,7 @@ static const struct point_iter_i line_p_interface = {
 };
 
 void line_p_iter_initialize(struct line_point_iter *self, struct point p1, struct point p2) {
-	self->iterator = &line_p_interface;
+	self->iterator = (struct point_iter_i *)&line_p_interface;
 	self->cursor = p1;
 	self->destination = p2;
 	self->delta.x = p2.x - p1.x;
@@ -45,7 +45,7 @@ static const struct point_iter_i rect_p_interface = {
 };
 
 void rect_p_iter_initialize(struct rect_point_iter *self, struct point p1, struct point p2) {
-	self->iterator = &rect_p_interface;
+	self->iterator = (struct point_iter_i *)&rect_p_interface;
 	point_initialize(&self->p1, MIN(p1.x, p2.x), MIN(p1.y, p2.y));
 	point_initialize(&self->p2, MAX(p1.x, p2.x), MAX(p1.y, p2.y));
 	self->cursor = self->p1;
@@ -68,7 +68,7 @@ static const struct point_iter_i circle_p_interface = {
 };
 
 void circle_p_iter_initialize(struct circle_point_iter *self, struct point center, int radius) {
-	self->iterator = &circle_p_interface;
+	self->iterator = (struct point_iter_i *)&circle_p_interface;
 	self->center = center;
 	self->radius = radius;
 	self->px = radius;
@@ -112,7 +112,7 @@ static const struct point_iter_i bezier1_p_interface = {
 };
 
 void bezier1_p_iter_initialize(struct bezier1_point_iter *self, struct point start, struct point end, struct point control) {
-	self->iterator = &bezier1_p_interface;
+	self->iterator = (struct point_iter_i *)&bezier1_p_interface;
 	self->start = start;
 	self->end = end;
 	self->control = control;

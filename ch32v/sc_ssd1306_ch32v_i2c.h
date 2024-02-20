@@ -4,7 +4,7 @@
 #include "sc_ssd1306.h"
 
 struct ssd1306_adaptor_ch32v_i2c {
-	const struct ssd1306_adaptor_i *adaptor;
+	struct ssd1306_adaptor_i *adaptor;
 	uint8_t address;
 };
 
