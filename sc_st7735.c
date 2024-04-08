@@ -9,7 +9,7 @@ void st7735_draw_point(struct st7735_screen *self, struct point p, uint32_t colo
 void st7735_size(struct st7735_screen *self, struct point *p);
 void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, uint32_t color);
 
-static const struct drawing_i drawing_interface = {
+static struct drawing_i drawing_interface = {
 	.draw_point = (drawing_draw_point_fn)st7735_draw_point,
 	.size = (drawing_size_fn)st7735_size,
 	.fill = (drawing_fill_fn)st7735_fill,
@@ -51,7 +51,7 @@ void st7735_draw_point(struct st7735_screen *self, struct point p, uint32_t colo
 }
 
 void st7735_size(struct st7735_screen *self, struct point *p) {
-	point_initialize(p, self->size.x, self->size.y);
+	point_init(p, self->size.x, self->size.y);
 }
 
 /// The default `fill` calls `draw_point`, which will cause many
@@ -169,10 +169,10 @@ void st7735_prepare(struct st7735_screen *self) {
 	st7735_write_cmd(self, 0x29);
 }
 
-void st7735_initialize(struct st7735_screen *self, struct st7735_adaptor_i **adaptor) {
+void st7735_init(struct st7735_screen *self, struct st7735_adaptor_i **adaptor) {
 	memset(self, 0, sizeof(struct st7735_screen));
 
-	self->drawing_board = (struct drawing_i *)&drawing_interface;
+	self->drawing_board = &drawing_interface;
 	self->adaptor = adaptor;
 
 	self->size.x = 160;

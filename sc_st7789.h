@@ -21,7 +21,7 @@ struct st7789_screen {
 	struct point size;
 };
 
-void st7789_initialize(struct st7789_screen *self, struct st7789_adaptor_i **adaptor);
+void st7789_init(struct st7789_screen *self, struct st7789_adaptor_i **adaptor);
 void st7789_set_address(struct st7789_screen *self, struct point p1, struct point p2);
 
 #endif

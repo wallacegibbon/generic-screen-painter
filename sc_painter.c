@@ -1,14 +1,12 @@
 #include "sc_ascii_font.h"
-#include "sc_color.h"
 #include "sc_painter.h"
 #include "sc_point_iterator.h"
-#include <stddef.h>
 
 static void dawing_board_fill_fallback(void *screen, struct point p1, struct point p2, uint32_t color) {
 	struct rect_point_iter point_iterator;
 	struct point p;
 
-	rect_p_iter_initialize(&point_iterator, p1, p2);
+	rect_p_iter_init(&point_iterator, p1, p2);
 	while (point_iter_next(&point_iterator, &p))
 		(*(struct drawing_i **)screen)->draw_point(screen, p, color);
 }
@@ -38,7 +36,7 @@ void painter_fill(struct painter *self, struct point p1, struct point p2, uint32
 
 void painter_fill_whole(struct painter *self, uint32_t color) {
 	struct point p1, p2;
-	point_initialize(&p1, 0, 0);
+	point_init(&p1, 0, 0);
 	painter_size(self, &p2);
 	painter_fill(self, p1, p2, color);
 }
@@ -63,7 +61,7 @@ void painter_draw_line(struct painter *self, struct point p1, struct point p2, u
 	struct line_point_iter point_iterator;
 	struct point p;
 
-	line_p_iter_initialize(&point_iterator, p1, p2);
+	line_p_iter_init(&point_iterator, p1, p2);
 	while (point_iter_next(&point_iterator, &p))
 		painter_draw_point(self, p, color);
 }
@@ -71,11 +69,11 @@ void painter_draw_line(struct painter *self, struct point p1, struct point p2, u
 void painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, uint32_t color) {
 	struct point tmp;
 
-	point_initialize(&tmp, p2.x, p1.y);
+	point_init(&tmp, p2.x, p1.y);
 	painter_draw_line(self, p1, tmp, color);
 	painter_draw_line(self, tmp, p2, color);
 
-	point_initialize(&tmp, p1.x, p2.y);
+	point_init(&tmp, p1.x, p2.y);
 	painter_draw_line(self, p2, tmp, color);
 	painter_draw_line(self, tmp, p1, color);
 }
@@ -85,7 +83,7 @@ void painter_draw_circle(struct painter *self, struct point p, int radius, uint3
 	struct point buffer[8];
 	int i;
 
-	circle_p_iter_initialize(&point_iterator, p, radius);
+	circle_p_iter_init(&point_iterator, p, radius);
 	while (point_iter_next(&point_iterator, buffer)) {
 		for (i = 0; i < 8; i++)
 			painter_draw_point(self, buffer[i], color);
@@ -101,12 +99,12 @@ void painter_draw_bezier(struct painter *self, struct point start, struct point 
 	painter_draw_line(self, control, end, GRAY_24bit);
 #endif
 
-	bezier1_p_iter_initialize(&point_iterator, start, end, control);
+	bezier1_p_iter_init(&point_iterator, start, end, control);
 	while (point_iter_next(&point_iterator, &p))
 		painter_draw_point(self, p, color);
 }
 
-void text_painter_initialize(struct text_painter *self, struct painter *painter) {
+void text_painter_init(struct text_painter *self, struct painter *painter) {
 	self->painter = painter;
 }
 
@@ -115,7 +113,7 @@ static void draw_char_byte(struct text_painter *self, uint8_t byte, struct point
 	int i, c;
 	for (i = 0; i < 8; i++) {
 		c = byte & 0x80 ? self->color.foreground : self->color.background;
-		point_initialize(&p, pos.x + i, pos.y);
+		point_init(&p, pos.x + i, pos.y);
 		painter_draw_point(self->painter, p, c);
 		byte <<= 1;
 	}
@@ -128,7 +126,7 @@ static int draw_char_16(struct text_painter *self, int idx, struct point pos) {
 
 	buffer = ascii_1608;
 	for (i = 0; i < 16; i++) {
-		point_initialize(&p, pos.x, pos.y + i);
+		point_init(&p, pos.x, pos.y + i);
 		draw_char_byte(self, buffer[idx * 16 + i], p);
 	}
 	return 1;
@@ -142,9 +140,9 @@ static int draw_char_32(struct text_painter *self, int idx, struct point pos) {
 	buffer = (const uint16_t *)ascii_3216;
 	for (i = 0; i < 32; i++) {
 		t = buffer[idx * 32 + i];
-		point_initialize(&p, pos.x, pos.y + i);
+		point_init(&p, pos.x, pos.y + i);
 		draw_char_byte(self, t & 0xFF, p);
-		point_initialize(&p, pos.x + 8, pos.y + i);
+		point_init(&p, pos.x + 8, pos.y + i);
 		draw_char_byte(self, t >> 8, p);
 	}
 	return 1;
@@ -168,7 +166,7 @@ int text_draw_string(struct text_painter *self, char *str, int size) {
 	padding = 0;
 	char_width = size / 2;
 
-	point_initialize(&p, self->pos.x, self->pos.y);
+	point_init(&p, self->pos.x, self->pos.y);
 
 	for (c = *str, cnt = 0; c; p.x += char_width + padding, c = *++str)
 		cnt += text_draw_char(self, c, size, p);

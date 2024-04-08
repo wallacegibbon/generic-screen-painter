@@ -7,7 +7,7 @@ static void write_data_16(struct st7735_adaptor_esp32_soft_spi *self, uint16_t d
 static void write_data(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data);
 static void write_cmd(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data);
 
-static const struct st7735_adaptor_i adaptor_interface = {
+static struct st7735_adaptor_i adaptor_interface = {
 	.write_data_16 = (st7735_adaptor_write_data_16_fn)write_data_16,
 	.write_data = (st7735_adaptor_write_data_fn)write_data,
 	.write_cmd = (st7735_adaptor_write_cmd_fn)write_cmd,
@@ -41,8 +41,8 @@ static void write_cmd(struct st7735_adaptor_esp32_soft_spi *self, uint8_t data) 
 	write_byte(self, data);
 }
 
-void st7735_adaptor_esp32_soft_spi_initialize(struct st7735_adaptor_esp32_soft_spi *self, uint8_t mosi_pin, uint8_t sclk_pin, uint8_t cs_pin, uint8_t rst_pin, uint8_t dc_pin) {
-	self->adaptor = (struct st7735_adaptor_i *)&adaptor_interface;
+void st7735_adaptor_esp32_soft_spi_init(struct st7735_adaptor_esp32_soft_spi *self, uint8_t mosi_pin, uint8_t sclk_pin, uint8_t cs_pin, uint8_t rst_pin, uint8_t dc_pin) {
+	self->adaptor = &adaptor_interface;
 
 	ESP_ERROR_CHECK(gpio_set_direction(mosi_pin, GPIO_MODE_OUTPUT));
 	ESP_ERROR_CHECK(gpio_set_direction(sclk_pin, GPIO_MODE_OUTPUT));

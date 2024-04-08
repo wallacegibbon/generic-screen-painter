@@ -7,7 +7,7 @@ static void start_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
 static void stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
 static void write_byte(struct ssd1306_adaptor_ch32v_i2c *self, uint8_t data);
 
-static const struct ssd1306_adaptor_i adaptor_interface = {
+static struct ssd1306_adaptor_i adaptor_interface = {
 	.start_transmit = (ssd1306_adaptor_start_transmit_fn)start_transmit,
 	.stop_transmit = (ssd1306_adaptor_stop_transmit_fn)stop_transmit,
 	.write_byte = (ssd1306_adaptor_write_byte_fn)write_byte,
@@ -38,7 +38,7 @@ static void write_byte(struct ssd1306_adaptor_ch32v_i2c *self, uint8_t data) {
 	I2C_SendData(I2C1, data);
 }
 
-void ssd1306_adaptor_ch32v_i2c_initialize(struct ssd1306_adaptor_ch32v_i2c *self, int address) {
+void ssd1306_adaptor_ch32v_i2c_init(struct ssd1306_adaptor_ch32v_i2c *self, int address) {
 	GPIO_InitTypeDef gpio_init = {0};
 	I2C_InitTypeDef i2c_init = {0};
 
@@ -70,6 +70,6 @@ void ssd1306_adaptor_ch32v_i2c_initialize(struct ssd1306_adaptor_ch32v_i2c *self
 
 	// I2C_AcknowledgeConfig(I2C1, ENABLE);
 
-	self->adaptor = (struct ssd1306_adaptor_i *)&adaptor_interface;
+	self->adaptor = &adaptor_interface;
 	self->address = address << 1;
 }

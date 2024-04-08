@@ -13,7 +13,7 @@ void ssd1306_size(struct ssd1306_screen *self, struct point *p);
 void ssd1306_clear(struct ssd1306_screen *self, uint32_t color);
 void ssd1306_flush(struct ssd1306_screen *self);
 
-static const struct drawing_i drawing_interface = {
+static struct drawing_i drawing_interface = {
 	.draw_point = (drawing_draw_point_fn)ssd1306_draw_point,
 	.size = (drawing_size_fn)ssd1306_size,
 	.clear = (drawing_clear_fn)ssd1306_clear,
@@ -179,7 +179,7 @@ void ssd1306_iterate(struct ssd1306_screen *self, int (*fn)(struct ssd1306_scree
 }
 
 void ssd1306_size(struct ssd1306_screen *self, struct point *p) {
-	point_initialize(p, self->size.x, self->size.y);
+	point_init(p, self->size.x, self->size.y);
 }
 
 void ssd1306_flush(struct ssd1306_screen *self) {
@@ -226,10 +226,10 @@ void ssd1306_set_up_down_invert(struct ssd1306_screen *self) {
 	self->direction = !self->direction;
 }
 
-void ssd1306_initialize(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor) {
+void ssd1306_init(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor) {
 	memset(self, 0, sizeof(struct ssd1306_screen));
 
-	self->drawing_board = (struct drawing_i *)&drawing_interface;
+	self->drawing_board = &drawing_interface;
 	self->adaptor = adaptor;
 
 	self->size.x = 128;

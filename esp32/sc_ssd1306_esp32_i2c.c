@@ -1,12 +1,12 @@
+#include "sc_ssd1306_esp32_i2c.h"
 #include "esp_log.h"
 #include "sc_ssd1306.h"
-#include "sc_ssd1306_esp32_i2c.h"
 
 static void start_transmit(struct ssd1306_adaptor_esp32_i2c *self);
 static void stop_transmit(struct ssd1306_adaptor_esp32_i2c *self);
 static void write_byte(struct ssd1306_adaptor_esp32_i2c *self, uint8_t data);
 
-static const struct ssd1306_adaptor_i adaptor_interface = {
+static struct ssd1306_adaptor_i adaptor_interface = {
 	.start_transmit = (ssd1306_adaptor_start_transmit_fn)start_transmit,
 	.stop_transmit = (ssd1306_adaptor_stop_transmit_fn)stop_transmit,
 	.write_byte = (ssd1306_adaptor_write_byte_fn)write_byte,
@@ -28,10 +28,10 @@ static void write_byte(struct ssd1306_adaptor_esp32_i2c *self, uint8_t data) {
 	ESP_ERROR_CHECK(i2c_master_write_byte(self->cmd_handle, data, true));
 }
 
-void ssd1306_adaptor_esp32_i2c_initialize(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num) {
+void ssd1306_adaptor_esp32_i2c_init(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num) {
 	i2c_config_t config;
 
-	self->adaptor = (struct ssd1306_adaptor_i *)&adaptor_interface;
+	self->adaptor = &adaptor_interface;
 	self->address = address << 1;
 	self->i2c_num = i2c_num;
 

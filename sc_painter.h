@@ -39,7 +39,7 @@ void painter_draw_rectangle(struct painter *self, struct point p1, struct point 
 void painter_draw_circle(struct painter *self, struct point p, int r, uint32_t color);
 void painter_draw_bezier(struct painter *self, struct point start, struct point end, struct point control, uint32_t color);
 
-void text_painter_initialize(struct text_painter *self, struct painter *painter);
+void text_painter_init(struct text_painter *self, struct painter *painter);
 int text_draw_char(struct text_painter *self, char ch, int size, struct point p);
 int text_draw_string(struct text_painter *self, char *str, int size);
 

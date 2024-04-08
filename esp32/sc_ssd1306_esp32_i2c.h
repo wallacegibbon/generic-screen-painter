@@ -12,6 +12,6 @@ struct ssd1306_adaptor_esp32_i2c {
 	uint8_t address;
 };
 
-void ssd1306_adaptor_esp32_i2c_initialize(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num);
+void ssd1306_adaptor_esp32_i2c_init(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num);
 
 #endif

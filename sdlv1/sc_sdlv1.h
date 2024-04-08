@@ -11,6 +11,6 @@ struct sdlv1_screen {
 	SDL_Surface *surface;
 };
 
-void sdlv1_initialize(struct sdlv1_screen *self, SDL_Surface *surface, int w, int h);
+void sdlv1_init(struct sdlv1_screen *self, SDL_Surface *surface, int w, int h);
 
 #endif

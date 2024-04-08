@@ -48,9 +48,9 @@ struct bezier1_point_iter {
 	float step;
 };
 
-void line_p_iter_initialize(struct line_point_iter *self, struct point p1, struct point p2);
-void rect_p_iter_initialize(struct rect_point_iter *self, struct point p1, struct point p2);
-void circle_p_iter_initialize(struct circle_point_iter *self, struct point center, int radius);
-void bezier1_p_iter_initialize(struct bezier1_point_iter *self, struct point start, struct point end, struct point control);
+void line_p_iter_init(struct line_point_iter *self, struct point p1, struct point p2);
+void rect_p_iter_init(struct rect_point_iter *self, struct point p1, struct point p2);
+void circle_p_iter_init(struct circle_point_iter *self, struct point center, int radius);
+void bezier1_p_iter_init(struct bezier1_point_iter *self, struct point start, struct point end, struct point control);
 
 #endif
