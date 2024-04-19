@@ -14,20 +14,24 @@ static struct st7789_adaptor_i adaptor_interface = {
 	.write_cmd = (st7789_adaptor_write_cmd_fn_t)write_cmd,
 };
 
-static void write_data_16(struct st7789_adaptor_ch32v_fsmc *self, uint16_t data) {
+static void write_data_16(struct st7789_adaptor_ch32v_fsmc *self, uint16_t data)
+{
 	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)(data >> 8);
 	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)data;
 }
 
-static void write_data(struct st7789_adaptor_ch32v_fsmc *self, uint8_t data) {
+static void write_data(struct st7789_adaptor_ch32v_fsmc *self, uint8_t data)
+{
 	*(volatile uint8_t *)ST7789_LCD_DATA = data;
 }
 
-static void write_cmd(struct st7789_adaptor_ch32v_fsmc *self, uint8_t cmd) {
+static void write_cmd(struct st7789_adaptor_ch32v_fsmc *self, uint8_t cmd)
+{
 	*(volatile uint8_t *)ST7789_LCD_CMD = cmd;
 }
 
-void st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self) {
+void st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self)
+{
 	GPIO_InitTypeDef gpio_init = {0};
 	FSMC_NORSRAMInitTypeDef fsmc_init = {0};
 	FSMC_NORSRAMTimingInitTypeDef read_write_timing = {0};

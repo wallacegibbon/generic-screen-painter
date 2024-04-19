@@ -20,37 +20,45 @@ static struct drawing_i drawing_interface = {
 	.flush = (drawing_flush_fn_t)ssd1306_flush,
 };
 
-static inline void ssd1306_start_transmit(struct ssd1306_screen *self) {
+static inline void ssd1306_start_transmit(struct ssd1306_screen *self)
+{
 	(*self->adaptor)->start_transmit(self->adaptor);
 }
 
-static inline void ssd1306_stop_transmit(struct ssd1306_screen *self) {
+static inline void ssd1306_stop_transmit(struct ssd1306_screen *self)
+{
 	(*self->adaptor)->stop_transmit(self->adaptor);
 }
 
-static inline void ssd1306_write_byte(struct ssd1306_screen *self, uint8_t data) {
+static inline void ssd1306_write_byte(struct ssd1306_screen *self, uint8_t data)
+{
 	(*self->adaptor)->write_byte(self->adaptor, data);
 }
 
-void ssd1306_data_single_byte(struct ssd1306_screen *self, uint8_t data) {
+void ssd1306_data_single_byte(struct ssd1306_screen *self, uint8_t data)
+{
 	ssd1306_write_byte(self, SSD1306_CTRL_WRITE_DATA_SINGLE);
 	ssd1306_write_byte(self, data);
 }
 
-void ssd1306_data_multi_byte_start(struct ssd1306_screen *self) {
+void ssd1306_data_multi_byte_start(struct ssd1306_screen *self)
+{
 	ssd1306_write_byte(self, SSD1306_CTRL_WRITE_DATA_MULTI);
 }
 
-void ssd1306_cmd_single_byte(struct ssd1306_screen *self, uint8_t data) {
+void ssd1306_cmd_single_byte(struct ssd1306_screen *self, uint8_t data)
+{
 	ssd1306_write_byte(self, SSD1306_CTRL_WRITE_CMD_SINGLE);
 	ssd1306_write_byte(self, data);
 }
 
-void ssd1306_cmd_multi_byte_start(struct ssd1306_screen *self) {
+void ssd1306_cmd_multi_byte_start(struct ssd1306_screen *self)
+{
 	ssd1306_write_byte(self, SSD1306_CTRL_WRITE_CMD_MULTI);
 }
 
-void ssd1306_fix_32row(struct ssd1306_screen *self) {
+void ssd1306_fix_32row(struct ssd1306_screen *self)
+{
 	ssd1306_start_transmit(self);
 	ssd1306_cmd_multi_byte_start(self);
 
@@ -62,7 +70,8 @@ void ssd1306_fix_32row(struct ssd1306_screen *self) {
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_set_direction_1(struct ssd1306_screen *self) {
+void ssd1306_set_direction_1(struct ssd1306_screen *self)
+{
 	ssd1306_start_transmit(self);
 	ssd1306_cmd_multi_byte_start(self);
 	ssd1306_write_byte(self, 0xA0);
@@ -70,7 +79,8 @@ void ssd1306_set_direction_1(struct ssd1306_screen *self) {
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_set_direction_2(struct ssd1306_screen *self) {
+void ssd1306_set_direction_2(struct ssd1306_screen *self)
+{
 	ssd1306_start_transmit(self);
 	ssd1306_cmd_multi_byte_start(self);
 	ssd1306_write_byte(self, 0xA1);
@@ -78,7 +88,8 @@ void ssd1306_set_direction_2(struct ssd1306_screen *self) {
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_set_brightness(struct ssd1306_screen *self, uint8_t value) {
+void ssd1306_set_brightness(struct ssd1306_screen *self, uint8_t value)
+{
 	ssd1306_start_transmit(self);
 	ssd1306_cmd_multi_byte_start(self);
 	ssd1306_write_byte(self, 0x81);
@@ -86,13 +97,15 @@ void ssd1306_set_brightness(struct ssd1306_screen *self, uint8_t value) {
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_color_reverse(struct ssd1306_screen *self) {
+void ssd1306_color_reverse(struct ssd1306_screen *self)
+{
 	ssd1306_start_transmit(self);
 	ssd1306_cmd_single_byte(self, 0xA7);
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_display_on(struct ssd1306_screen *self) {
+void ssd1306_display_on(struct ssd1306_screen *self)
+{
 	ssd1306_start_transmit(self);
 	ssd1306_cmd_multi_byte_start(self);
 	/// turn on the charge pump
@@ -103,7 +116,8 @@ void ssd1306_display_on(struct ssd1306_screen *self) {
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_display_off(struct ssd1306_screen *self) {
+void ssd1306_display_off(struct ssd1306_screen *self)
+{
 	ssd1306_start_transmit(self);
 	ssd1306_cmd_multi_byte_start(self);
 	/// turn on the charge pump
@@ -114,7 +128,8 @@ void ssd1306_display_off(struct ssd1306_screen *self) {
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_draw_cell(struct ssd1306_screen *self, int x, int page_idx, int cell_value) {
+void ssd1306_draw_cell(struct ssd1306_screen *self, int x, int page_idx, int cell_value)
+{
 	ssd1306_start_transmit(self);
 
 	ssd1306_cmd_single_byte(self, 0xB0 + page_idx);
@@ -125,7 +140,8 @@ void ssd1306_draw_cell(struct ssd1306_screen *self, int x, int page_idx, int cel
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, uint32_t color) {
+void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, uint32_t color)
+{
 	int page_idx, byte_idx, tmp;
 
 	if (p.x >= self->size.x || p.y >= self->size.y)
@@ -146,17 +162,21 @@ void ssd1306_draw_point(struct ssd1306_screen *self, struct point p, uint32_t co
 		ssd1306_draw_cell(self, p.x, page_idx, tmp);
 }
 
-int ssd1306_page_byte(struct ssd1306_screen *self, int page_index, int x) {
+int ssd1306_page_byte(struct ssd1306_screen *self, int page_index, int x)
+{
 	return self->buffer[x][page_index];
 }
 
-int ssd1306_page_byte_empty(struct ssd1306_screen *self, int page_index, int x) {
+int ssd1306_page_byte_empty(struct ssd1306_screen *self, int page_index, int x)
+{
 	return self->clear_color;
 }
 
 /// This function will send data to SSD1306 through IIC directly as it is
 /// designed to speed up operations. The `auto_flush` is ignored here.
-void ssd1306_iterate_page(struct ssd1306_screen *self, int page_index, int (*fn)(struct ssd1306_screen *, int, int)) {
+void ssd1306_iterate_page(struct ssd1306_screen *self, int page_index,
+			  int (*fn)(struct ssd1306_screen *, int, int))
+{
 	int x;
 
 	ssd1306_start_transmit(self);
@@ -172,27 +192,32 @@ void ssd1306_iterate_page(struct ssd1306_screen *self, int page_index, int (*fn)
 	ssd1306_stop_transmit(self);
 }
 
-void ssd1306_iterate(struct ssd1306_screen *self, int (*fn)(struct ssd1306_screen *, int, int)) {
+void ssd1306_iterate(struct ssd1306_screen *self, int (*fn)(struct ssd1306_screen *, int, int))
+{
 	int page;
 	for (page = 0; page < 8; page++)
 		ssd1306_iterate_page(self, page, fn);
 }
 
-void ssd1306_size(struct ssd1306_screen *self, struct point *p) {
+void ssd1306_size(struct ssd1306_screen *self, struct point *p)
+{
 	point_init(p, self->size.x, self->size.y);
 }
 
-void ssd1306_flush(struct ssd1306_screen *self) {
+void ssd1306_flush(struct ssd1306_screen *self)
+{
 	ssd1306_iterate(self, ssd1306_page_byte);
 }
 
-void ssd1306_clear(struct ssd1306_screen *self, uint32_t color) {
+void ssd1306_clear(struct ssd1306_screen *self, uint32_t color)
+{
 	/// `self->clear_color` represents a page, not a point.
 	self->clear_color = color ? 0xFF : 0;
 	ssd1306_iterate(self, ssd1306_page_byte_empty);
 }
 
-void ssd1306_prepare(struct ssd1306_screen *self) {
+void ssd1306_prepare(struct ssd1306_screen *self)
+{
 	if (self->direction)
 		ssd1306_set_direction_2(self);
 	else
@@ -217,7 +242,8 @@ void ssd1306_prepare(struct ssd1306_screen *self) {
 	*/
 }
 
-void ssd1306_set_up_down_invert(struct ssd1306_screen *self) {
+void ssd1306_set_up_down_invert(struct ssd1306_screen *self)
+{
 	if (self->direction)
 		ssd1306_set_direction_1(self);
 	else
@@ -226,7 +252,8 @@ void ssd1306_set_up_down_invert(struct ssd1306_screen *self) {
 	self->direction = !self->direction;
 }
 
-void ssd1306_init(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor) {
+void ssd1306_init(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor)
+{
 	memset(self, 0, sizeof(struct ssd1306_screen));
 
 	self->drawing_board = &drawing_interface;
