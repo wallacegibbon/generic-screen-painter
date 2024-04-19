@@ -1,5 +1,5 @@
-#include "sc_ascii_font.h"
 #include "sc_painter.h"
+#include "sc_ascii_font.h"
 #include "sc_point_iterator.h"
 
 static void dawing_board_fill_fallback(void *screen, struct point p1, struct point p2, uint32_t color) {
@@ -12,21 +12,21 @@ static void dawing_board_fill_fallback(void *screen, struct point p1, struct poi
 }
 
 void painter_draw_point(struct painter *self, struct point p, uint32_t color) {
-	drawing_draw_point_fn fn;
+	drawing_draw_point_fn_t fn;
 	fn = (*self->drawing_board)->draw_point;
 	if (fn)
 		fn(self->drawing_board, p, color);
 }
 
 void painter_size(struct painter *self, struct point *p) {
-	drawing_size_fn fn;
+	drawing_size_fn_t fn;
 	fn = (*self->drawing_board)->size;
 	if (fn)
 		fn(self->drawing_board, p);
 }
 
 void painter_fill(struct painter *self, struct point p1, struct point p2, uint32_t color) {
-	drawing_fill_fn fn;
+	drawing_fill_fn_t fn;
 	fn = (*self->drawing_board)->fill;
 	if (fn)
 		fn(self->drawing_board, p1, p2, color);
@@ -42,7 +42,7 @@ void painter_fill_whole(struct painter *self, uint32_t color) {
 }
 
 void painter_clear(struct painter *self, uint32_t color) {
-	drawing_clear_fn fn;
+	drawing_clear_fn_t fn;
 	fn = (*self->drawing_board)->clear;
 	if (fn)
 		fn(self->drawing_board, color);
@@ -51,7 +51,7 @@ void painter_clear(struct painter *self, uint32_t color) {
 }
 
 void painter_flush(struct painter *self) {
-	drawing_flush_fn fn;
+	drawing_flush_fn_t fn;
 	fn = (*self->drawing_board)->flush;
 	if (fn)
 		fn(self->drawing_board);

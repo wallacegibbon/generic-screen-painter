@@ -1,8 +1,6 @@
 #include "sc_st7789.h"
 #include "sc_color.h"
 #include "sc_painter.h"
-#include "sc_point_iterator.h"
-#include <stddef.h>
 #include <string.h>
 
 void st7789_draw_point(struct st7789_screen *self, struct point p, uint32_t color);
@@ -10,9 +8,9 @@ void st7789_size(struct st7789_screen *self, struct point *p);
 void st7789_fill(struct st7789_screen *self, struct point p1, struct point p2, uint32_t color);
 
 static struct drawing_i drawing_interface = {
-	.draw_point = (drawing_draw_point_fn)st7789_draw_point,
-	.size = (drawing_size_fn)st7789_size,
-	.fill = (drawing_fill_fn)st7789_fill,
+	.draw_point = (drawing_draw_point_fn_t)st7789_draw_point,
+	.size = (drawing_size_fn_t)st7789_size,
+	.fill = (drawing_fill_fn_t)st7789_fill,
 };
 
 static inline void st7789_write_data_16(struct st7789_screen *self, uint16_t data) {

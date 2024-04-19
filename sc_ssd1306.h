@@ -4,14 +4,14 @@
 #include "sc_painter.h"
 #include <stdint.h>
 
-typedef void (*ssd1306_adaptor_start_transmit_fn)(void *adaptor);
-typedef void (*ssd1306_adaptor_stop_transmit_fn)(void *adaptor);
-typedef void (*ssd1306_adaptor_write_byte_fn)(void *adaptor, uint8_t data);
+typedef void (*ssd1306_adaptor_start_transmit_fn_t)(void *adaptor);
+typedef void (*ssd1306_adaptor_stop_transmit_fn_t)(void *adaptor);
+typedef void (*ssd1306_adaptor_write_byte_fn_t)(void *adaptor, uint8_t data);
 
 struct ssd1306_adaptor_i {
-	ssd1306_adaptor_start_transmit_fn start_transmit;
-	ssd1306_adaptor_stop_transmit_fn stop_transmit;
-	ssd1306_adaptor_write_byte_fn write_byte;
+	ssd1306_adaptor_start_transmit_fn_t start_transmit;
+	ssd1306_adaptor_stop_transmit_fn_t stop_transmit;
+	ssd1306_adaptor_write_byte_fn_t write_byte;
 };
 
 struct ssd1306_screen {

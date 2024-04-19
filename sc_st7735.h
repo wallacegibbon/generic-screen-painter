@@ -5,14 +5,14 @@
 #include "sc_painter.h"
 #include <stdint.h>
 
-typedef void (*st7735_adaptor_write_data_16_fn)(void *adaptor, uint16_t data);
-typedef void (*st7735_adaptor_write_data_fn)(void *adaptor, uint8_t data);
-typedef void (*st7735_adaptor_write_cmd_fn)(void *adaptor, uint8_t data);
+typedef void (*st7735_adaptor_write_data_16_fn_t)(void *adaptor, uint16_t data);
+typedef void (*st7735_adaptor_write_data_fn_t)(void *adaptor, uint8_t data);
+typedef void (*st7735_adaptor_write_cmd_fn_t)(void *adaptor, uint8_t data);
 
 struct st7735_adaptor_i {
-	st7735_adaptor_write_data_16_fn write_data_16;
-	st7735_adaptor_write_data_fn write_data;
-	st7735_adaptor_write_cmd_fn write_cmd;
+	st7735_adaptor_write_data_16_fn_t write_data_16;
+	st7735_adaptor_write_data_fn_t write_data;
+	st7735_adaptor_write_cmd_fn_t write_cmd;
 };
 
 struct st7735_screen {

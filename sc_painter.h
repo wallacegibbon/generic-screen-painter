@@ -3,18 +3,18 @@
 
 #include "sc_common.h"
 
-typedef void (*drawing_draw_point_fn)(void *screen, struct point p, uint32_t color);
-typedef void (*drawing_fill_fn)(void *screen, struct point p1, struct point p2, uint32_t color);
-typedef void (*drawing_clear_fn)(void *screen, uint32_t color);
-typedef void (*drawing_size_fn)(void *screen, struct point *p);
-typedef void (*drawing_flush_fn)(void *screen);
+typedef void (*drawing_draw_point_fn_t)(void *screen, struct point p, uint32_t color);
+typedef void (*drawing_fill_fn_t)(void *screen, struct point p1, struct point p2, uint32_t color);
+typedef void (*drawing_clear_fn_t)(void *screen, uint32_t color);
+typedef void (*drawing_size_fn_t)(void *screen, struct point *p);
+typedef void (*drawing_flush_fn_t)(void *screen);
 
 struct drawing_i {
-	drawing_draw_point_fn draw_point;
-	drawing_size_fn size;
-	drawing_clear_fn clear;
-	drawing_fill_fn fill;
-	drawing_flush_fn flush;
+	drawing_draw_point_fn_t draw_point;
+	drawing_size_fn_t size;
+	drawing_clear_fn_t clear;
+	drawing_fill_fn_t fill;
+	drawing_flush_fn_t flush;
 };
 
 struct painter {

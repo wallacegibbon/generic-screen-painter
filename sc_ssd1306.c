@@ -14,10 +14,10 @@ void ssd1306_clear(struct ssd1306_screen *self, uint32_t color);
 void ssd1306_flush(struct ssd1306_screen *self);
 
 static struct drawing_i drawing_interface = {
-	.draw_point = (drawing_draw_point_fn)ssd1306_draw_point,
-	.size = (drawing_size_fn)ssd1306_size,
-	.clear = (drawing_clear_fn)ssd1306_clear,
-	.flush = (drawing_flush_fn)ssd1306_flush,
+	.draw_point = (drawing_draw_point_fn_t)ssd1306_draw_point,
+	.size = (drawing_size_fn_t)ssd1306_size,
+	.clear = (drawing_clear_fn_t)ssd1306_clear,
+	.flush = (drawing_flush_fn_t)ssd1306_flush,
 };
 
 static inline void ssd1306_start_transmit(struct ssd1306_screen *self) {
