@@ -1,28 +1,30 @@
 #ifndef __SC_COMMON_H
 #define __SC_COMMON_H
 
-#include <stdint.h>
-
 struct point {
 	int x, y;
 };
 
-static inline void point_init(struct point *self, int x, int y) {
+static inline int point_init(struct point *self, int x, int y)
+{
 	self->x = x;
 	self->y = y;
+	return 0;
 }
 
 struct color_pair {
-	uint32_t foreground;
-	uint32_t background;
+	unsigned long foreground;
+	unsigned long background;
 };
 
-static inline void color_pair_init(struct color_pair *self, uint32_t f, uint32_t b) {
+static inline int color_pair_init(struct color_pair *self, unsigned long f, unsigned long b)
+{
 	self->foreground = f;
 	self->background = b;
+	return 0;
 }
 
-void delay(int milliseconds);
+int delay(int milliseconds);
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) > (b) ? (b) : (a))

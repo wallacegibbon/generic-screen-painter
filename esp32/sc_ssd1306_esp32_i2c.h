@@ -9,9 +9,9 @@ struct ssd1306_adaptor_esp32_i2c {
 	struct ssd1306_adaptor_i *adaptor;
 	i2c_cmd_handle_t cmd_handle;
 	i2c_port_t i2c_num;
-	uint8_t address;
+	int address;
 };
 
-void ssd1306_adaptor_esp32_i2c_init(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num);
+int ssd1306_adaptor_esp32_i2c_init(struct ssd1306_adaptor_esp32_i2c *self, int address, i2c_port_t i2c_num);
 
 #endif

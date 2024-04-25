@@ -3,9 +3,9 @@
 #include "sc_common.h"
 #include "sc_ssd1306.h"
 
-static void start_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
-static void stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
-static void write_byte(struct ssd1306_adaptor_ch32v_i2c *self, uint8_t data);
+static int start_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
+static int stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
+static int write_byte(struct ssd1306_adaptor_ch32v_i2c *self, int data);
 
 static struct ssd1306_adaptor_i adaptor_interface = {
 	.start_transmit = (ssd1306_adaptor_start_transmit_fn_t)start_transmit,
@@ -13,7 +13,7 @@ static struct ssd1306_adaptor_i adaptor_interface = {
 	.write_byte = (ssd1306_adaptor_write_byte_fn_t)write_byte,
 };
 
-static void start_transmit(struct ssd1306_adaptor_ch32v_i2c *self)
+static int start_transmit(struct ssd1306_adaptor_ch32v_i2c *self)
 {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY) != RESET)
 		;
@@ -25,23 +25,27 @@ static void start_transmit(struct ssd1306_adaptor_ch32v_i2c *self)
 
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
 		;
+
+	return 0;
 }
 
-static void stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self)
+static int stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self)
 {
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED))
 		;
 	I2C_GenerateSTOP(I2C1, ENABLE);
+	return 0;
 }
 
-static void write_byte(struct ssd1306_adaptor_ch32v_i2c *self, uint8_t data)
+static int write_byte(struct ssd1306_adaptor_ch32v_i2c *self, int data)
 {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_TXE) == RESET)
 		;
 	I2C_SendData(I2C1, data);
+	return 0;
 }
 
-void ssd1306_adaptor_ch32v_i2c_init(struct ssd1306_adaptor_ch32v_i2c *self, int address)
+int ssd1306_adaptor_ch32v_i2c_init(struct ssd1306_adaptor_ch32v_i2c *self, int address)
 {
 	GPIO_InitTypeDef gpio_init = {0};
 	I2C_InitTypeDef i2c_init = {0};
@@ -76,4 +80,5 @@ void ssd1306_adaptor_ch32v_i2c_init(struct ssd1306_adaptor_ch32v_i2c *self, int 
 
 	self->adaptor = &adaptor_interface;
 	self->address = address << 1;
+	return 0;
 }

@@ -3,9 +3,9 @@
 #include "sc_point_iterator.h"
 #include <stdlib.h>
 
-void sdlv1_draw_point(struct sdlv1_screen *self, struct point p, uint32_t color);
-void sdlv1_size(struct sdlv1_screen *self, struct point *p);
-void sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, uint32_t color);
+int sdlv1_draw_point(struct sdlv1_screen *self, struct point p, unsigned long color);
+int sdlv1_size(struct sdlv1_screen *self, struct point *p);
+int sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, unsigned long color);
 
 static struct drawing_i drawing_interface = {
 	.draw_point = (drawing_draw_point_fn)sdlv1_draw_point,
@@ -13,7 +13,7 @@ static struct drawing_i drawing_interface = {
 	.fill = (drawing_fill_fn)sdlv1_fill,
 };
 
-void sdlv1_draw_point(struct sdlv1_screen *self, struct point p, uint32_t color)
+int sdlv1_draw_point(struct sdlv1_screen *self, struct point p, unsigned long color)
 {
 	uint8_t *pixel;
 	int bpp;
@@ -23,14 +23,15 @@ void sdlv1_draw_point(struct sdlv1_screen *self, struct point p, uint32_t color)
 
 	// color = SDL_MapRGB(self->surface->format, 0xFF, 0, 0);
 	memcpy(pixel, &color, bpp);
+	return 0;
 }
 
-void sdlv1_size(struct sdlv1_screen *self, struct point *p)
+int sdlv1_size(struct sdlv1_screen *self, struct point *p)
 {
-	point_init(p, self->size.x, self->size.y);
+	return point_init(p, self->size.x, self->size.y);
 }
 
-void sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, uint32_t color)
+int sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, unsigned long color)
 {
 	SDL_Rect rect;
 	rect.x = p1.x;
@@ -38,12 +39,14 @@ void sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, uin
 	rect.w = p2.x - p1.x;
 	rect.h = p2.y - p1.y;
 	SDL_FillRect(self->surface, &rect, color);
+	return 0;
 }
 
-void sdlv1_init(struct sdlv1_screen *self, SDL_Surface *surface, int w, int h)
+int sdlv1_init(struct sdlv1_screen *self, SDL_Surface *surface, int w, int h)
 {
 	self->drawing_board = &drawing_interface;
 	self->surface = surface;
 	self->size.x = w;
 	self->size.y = h;
+	return 0;
 }

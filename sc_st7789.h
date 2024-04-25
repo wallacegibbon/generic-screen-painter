@@ -3,11 +3,10 @@
 
 #include "sc_common.h"
 #include "sc_painter.h"
-#include <stdint.h>
 
-typedef void (*st7789_adaptor_write_data_16_fn_t)(void *adaptor, uint16_t data);
-typedef void (*st7789_adaptor_write_data_fn_t)(void *adaptor, uint8_t data);
-typedef void (*st7789_adaptor_write_cmd_fn_t)(void *adaptor, uint8_t data);
+typedef int (*st7789_adaptor_write_data_16_fn_t)(void *adaptor, int data);
+typedef int (*st7789_adaptor_write_data_fn_t)(void *adaptor, int data);
+typedef int (*st7789_adaptor_write_cmd_fn_t)(void *adaptor, int data);
 
 struct st7789_adaptor_i {
 	st7789_adaptor_write_data_16_fn_t write_data_16;
@@ -21,7 +20,7 @@ struct st7789_screen {
 	struct point size;
 };
 
-void st7789_init(struct st7789_screen *self, struct st7789_adaptor_i **adaptor);
-void st7789_set_address(struct st7789_screen *self, struct point p1, struct point p2);
+int st7789_init(struct st7789_screen *self, struct st7789_adaptor_i **adaptor);
+int st7789_set_address(struct st7789_screen *self, struct point p1, struct point p2);
 
 #endif

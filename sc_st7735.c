@@ -3,9 +3,9 @@
 #include "sc_painter.h"
 #include <string.h>
 
-void st7735_draw_point(struct st7735_screen *self, struct point p, uint32_t color);
-void st7735_size(struct st7735_screen *self, struct point *p);
-void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, uint32_t color);
+int st7735_draw_point(struct st7735_screen *self, struct point p, unsigned long color);
+int st7735_size(struct st7735_screen *self, struct point *p);
+int st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, unsigned long color);
 
 static struct drawing_i drawing_interface = {
 	.draw_point = (drawing_draw_point_fn_t)st7735_draw_point,
@@ -13,22 +13,22 @@ static struct drawing_i drawing_interface = {
 	.fill = (drawing_fill_fn_t)st7735_fill,
 };
 
-static inline void st7735_write_data_16(struct st7735_screen *self, uint16_t data)
+static inline void st7735_write_data_16(struct st7735_screen *self, int data)
 {
 	(*self->adaptor)->write_data_16(self->adaptor, data);
 }
 
-static inline void st7735_write_data(struct st7735_screen *self, uint8_t data)
+static inline void st7735_write_data(struct st7735_screen *self, int data)
 {
 	(*self->adaptor)->write_data(self->adaptor, data);
 }
 
-static inline void st7735_write_cmd(struct st7735_screen *self, uint8_t data)
+static inline void st7735_write_cmd(struct st7735_screen *self, int data)
 {
 	(*self->adaptor)->write_cmd(self->adaptor, data);
 }
 
-void st7735_set_address(struct st7735_screen *self, struct point p1, struct point p2)
+int st7735_set_address(struct st7735_screen *self, struct point p1, struct point p2)
 {
 	/// column address settings
 	st7735_write_cmd(self, 0x2A);
@@ -42,34 +42,37 @@ void st7735_set_address(struct st7735_screen *self, struct point p1, struct poin
 
 	/// memory write
 	st7735_write_cmd(self, 0x2C);
+	return 0;
 }
 
-void st7735_draw_point(struct st7735_screen *self, struct point p, uint32_t color)
+int st7735_draw_point(struct st7735_screen *self, struct point p, unsigned long color)
 {
 	if (p.x >= self->size.x || p.y >= self->size.y)
-		return;
+		return 1;
 
 	st7735_set_address(self, p, p);
 	st7735_write_data_16(self, color_to_16bit(color));
+	return 0;
 }
 
-void st7735_size(struct st7735_screen *self, struct point *p)
+int st7735_size(struct st7735_screen *self, struct point *p)
 {
-	point_init(p, self->size.x, self->size.y);
+	return point_init(p, self->size.x, self->size.y);
 }
 
 /// The default `fill` calls `draw_point`, which will cause many
 /// unnecessary `set_address` invocations.
-void st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, uint32_t color)
+int st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, unsigned long color)
 {
 	int n = ABS((p1.x - p2.x) * (p1.y - p2.y));
 
 	st7735_set_address(self, p1, p2);
 	while (n--)
 		st7735_write_data_16(self, color_to_16bit(color));
+	return 0;
 }
 
-void st7735_prepare(struct st7735_screen *self)
+int st7735_prepare(struct st7735_screen *self)
 {
 	st7735_write_cmd(self, 0x11);
 	delay(100);
@@ -173,9 +176,10 @@ void st7735_prepare(struct st7735_screen *self)
 
 	/// display on
 	st7735_write_cmd(self, 0x29);
+	return 0;
 }
 
-void st7735_init(struct st7735_screen *self, struct st7735_adaptor_i **adaptor)
+int st7735_init(struct st7735_screen *self, struct st7735_adaptor_i **adaptor)
 {
 	memset(self, 0, sizeof(struct st7735_screen));
 
@@ -185,5 +189,8 @@ void st7735_init(struct st7735_screen *self, struct st7735_adaptor_i **adaptor)
 	self->size.x = 160;
 	self->size.y = 80;
 
-	st7735_prepare(self);
+	if (st7735_prepare(self))
+		return 1;
+
+	return 0;
 }

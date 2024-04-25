@@ -11,6 +11,6 @@ struct st7789_adaptor_ch32v_fsmc {
 	struct st7789_adaptor_i *adaptor;
 };
 
-void st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self);
+int st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self);
 
 #endif

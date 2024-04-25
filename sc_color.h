@@ -1,13 +1,13 @@
 #ifndef __SC_COLOR_H
 #define __SC_COLOR_H
 
-#include <stdint.h>
-
-static inline uint16_t color_to_16bit(uint32_t color) {
-        return ((color & 0xF80000) >> 8) | ((color & 0x00FC00) >> 5) | ((color & 0x0000F8) >> 3);
+static inline unsigned int color_to_16bit(unsigned long color)
+{
+	return ((color & 0xF80000) >> 8) | ((color & 0x00FC00) >> 5) | ((color & 0x0000F8) >> 3);
 }
 
-static inline uint8_t color_to_1bit(uint32_t color) {
+static inline unsigned int color_to_1bit(unsigned long color)
+{
 	return color ? 1 : 0;
 }
 

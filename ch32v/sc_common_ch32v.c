@@ -1,7 +1,7 @@
 #include "core_systick.h"
 #include "sc_common.h"
 
-void delay(int milliseconds)
+int delay(int milliseconds)
 {
-	delay_ms(milliseconds);
+	return delay_ms(milliseconds);
 }

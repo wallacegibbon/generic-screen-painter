@@ -5,9 +5,9 @@
 
 struct ssd1306_adaptor_ch32v_i2c {
 	struct ssd1306_adaptor_i *adaptor;
-	uint8_t address;
+	unsigned char address;
 };
 
-void ssd1306_adaptor_ch32v_i2c_init(struct ssd1306_adaptor_ch32v_i2c *self, int address);
+int ssd1306_adaptor_ch32v_i2c_init(struct ssd1306_adaptor_ch32v_i2c *self, int address);
 
 #endif

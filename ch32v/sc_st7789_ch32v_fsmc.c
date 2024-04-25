@@ -1,12 +1,11 @@
 #include "sc_st7789_ch32v_fsmc.h"
 #include "ch32v30x_fsmc.h"
 #include "ch32v30x_gpio.h"
-#include "sc_common.h"
 #include "sc_st7789.h"
 
-static void write_data_16(struct st7789_adaptor_ch32v_fsmc *self, uint16_t data);
-static void write_data(struct st7789_adaptor_ch32v_fsmc *self, uint8_t data);
-static void write_cmd(struct st7789_adaptor_ch32v_fsmc *self, uint8_t cmd);
+static int write_data_16(struct st7789_adaptor_ch32v_fsmc *self, int data);
+static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data);
+static int write_cmd(struct st7789_adaptor_ch32v_fsmc *self, int cmd);
 
 static struct st7789_adaptor_i adaptor_interface = {
 	.write_data_16 = (st7789_adaptor_write_data_16_fn_t)write_data_16,
@@ -14,23 +13,24 @@ static struct st7789_adaptor_i adaptor_interface = {
 	.write_cmd = (st7789_adaptor_write_cmd_fn_t)write_cmd,
 };
 
-static void write_data_16(struct st7789_adaptor_ch32v_fsmc *self, uint16_t data)
+static int write_data_16(struct st7789_adaptor_ch32v_fsmc *self, int data)
 {
 	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)(data >> 8);
 	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)data;
+	return 0;
 }
 
-static void write_data(struct st7789_adaptor_ch32v_fsmc *self, uint8_t data)
+static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data)
 {
-	*(volatile uint8_t *)ST7789_LCD_DATA = data;
+	return *(volatile uint8_t *)ST7789_LCD_DATA = data;
 }
 
-static void write_cmd(struct st7789_adaptor_ch32v_fsmc *self, uint8_t cmd)
+static int write_cmd(struct st7789_adaptor_ch32v_fsmc *self, int cmd)
 {
-	*(volatile uint8_t *)ST7789_LCD_CMD = cmd;
+	return *(volatile uint8_t *)ST7789_LCD_CMD = cmd;
 }
 
-void st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self)
+int st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self)
 {
 	GPIO_InitTypeDef gpio_init = {0};
 	FSMC_NORSRAMInitTypeDef fsmc_init = {0};
@@ -98,4 +98,5 @@ void st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self)
 	FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM1, ENABLE);
 
 	self->adaptor = &adaptor_interface;
+	return 0;
 }

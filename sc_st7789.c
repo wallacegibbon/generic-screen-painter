@@ -3,9 +3,9 @@
 #include "sc_painter.h"
 #include <string.h>
 
-void st7789_draw_point(struct st7789_screen *self, struct point p, uint32_t color);
-void st7789_size(struct st7789_screen *self, struct point *p);
-void st7789_fill(struct st7789_screen *self, struct point p1, struct point p2, uint32_t color);
+int st7789_draw_point(struct st7789_screen *self, struct point p, unsigned long color);
+int st7789_size(struct st7789_screen *self, struct point *p);
+int st7789_fill(struct st7789_screen *self, struct point p1, struct point p2, unsigned long color);
 
 static struct drawing_i drawing_interface = {
 	.draw_point = (drawing_draw_point_fn_t)st7789_draw_point,
@@ -13,22 +13,22 @@ static struct drawing_i drawing_interface = {
 	.fill = (drawing_fill_fn_t)st7789_fill,
 };
 
-static inline void st7789_write_data_16(struct st7789_screen *self, uint16_t data)
+static inline int st7789_write_data_16(struct st7789_screen *self, int data)
 {
-	(*self->adaptor)->write_data_16(self->adaptor, data);
+	return (*self->adaptor)->write_data_16(self->adaptor, data);
 }
 
-static inline void st7789_write_data(struct st7789_screen *self, uint8_t data)
+static inline int st7789_write_data(struct st7789_screen *self, int data)
 {
-	(*self->adaptor)->write_data(self->adaptor, data);
+	return (*self->adaptor)->write_data(self->adaptor, data);
 }
 
-static inline void st7789_write_cmd(struct st7789_screen *self, uint8_t data)
+static inline int st7789_write_cmd(struct st7789_screen *self, int data)
 {
-	(*self->adaptor)->write_cmd(self->adaptor, data);
+	return (*self->adaptor)->write_cmd(self->adaptor, data);
 }
 
-void st7789_set_address(struct st7789_screen *self, struct point p1, struct point p2)
+int st7789_set_address(struct st7789_screen *self, struct point p1, struct point p2)
 {
 	/// column address settings
 	st7789_write_cmd(self, 0x2A);
@@ -42,34 +42,37 @@ void st7789_set_address(struct st7789_screen *self, struct point p1, struct poin
 
 	/// memory write
 	st7789_write_cmd(self, 0x2C);
+	return 0;
 }
 
-void st7789_draw_point(struct st7789_screen *self, struct point p, uint32_t color)
+int st7789_draw_point(struct st7789_screen *self, struct point p, unsigned long color)
 {
 	if (p.x >= self->size.x || p.y >= self->size.y)
-		return;
+		return 1;
 
 	st7789_set_address(self, p, p);
 	st7789_write_data_16(self, color_to_16bit(color));
+	return 0;
 }
 
-void st7789_size(struct st7789_screen *self, struct point *p)
+int st7789_size(struct st7789_screen *self, struct point *p)
 {
-	point_init(p, self->size.x, self->size.y);
+	return point_init(p, self->size.x, self->size.y);
 }
 
 /// The default `fill` calls `draw_point`, which will cause many
 /// unnecessary `set_address` invocations.
-void st7789_fill(struct st7789_screen *self, struct point p1, struct point p2, uint32_t color)
+int st7789_fill(struct st7789_screen *self, struct point p1, struct point p2, unsigned long color)
 {
 	int n = ABS((p1.x - p2.x) * (p1.y - p2.y));
 
 	st7789_set_address(self, p1, p2);
 	while (n--)
 		st7789_write_data_16(self, color_to_16bit(color));
+	return 0;
 }
 
-void st7789_prepare(struct st7789_screen *self)
+int st7789_prepare(struct st7789_screen *self)
 {
 	/// Memory Data Access Control
 	st7789_write_cmd(self, 0x36);
@@ -165,9 +168,10 @@ void st7789_prepare(struct st7789_screen *self)
 
 	/// Display on
 	st7789_write_cmd(self, 0x29);
+	return 0;
 }
 
-void st7789_init(struct st7789_screen *self, struct st7789_adaptor_i **adaptor)
+int st7789_init(struct st7789_screen *self, struct st7789_adaptor_i **adaptor)
 {
 	memset(self, 0, sizeof(struct st7789_screen));
 
@@ -177,5 +181,8 @@ void st7789_init(struct st7789_screen *self, struct st7789_adaptor_i **adaptor)
 	self->size.x = 240;
 	self->size.y = 240;
 
-	st7789_prepare(self);
+	if (st7789_prepare(self))
+		return 1;
+
+	return 0;
 }
