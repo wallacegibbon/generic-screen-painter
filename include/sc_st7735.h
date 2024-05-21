@@ -5,7 +5,9 @@
 #include "sc_painter.h"
 
 typedef int (*st7735_adaptor_write_data_16_fn_t)(void *adaptor, int data);
+
 typedef int (*st7735_adaptor_write_data_fn_t)(void *adaptor, int data);
+
 typedef int (*st7735_adaptor_write_cmd_fn_t)(void *adaptor, int data);
 
 struct st7735_adaptor_i {
@@ -21,6 +23,7 @@ struct st7735_screen {
 };
 
 int st7735_init(struct st7735_screen *self, struct st7735_adaptor_i **adaptor);
+
 int st7735_set_address(struct st7735_screen *self, struct point p1, struct point p2);
 
 #endif

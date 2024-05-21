@@ -50,8 +50,11 @@ struct bezier1_point_iter {
 };
 
 int line_p_iter_init(struct line_point_iter *self, struct point p1, struct point p2);
+
 int rect_p_iter_init(struct rect_point_iter *self, struct point p1, struct point p2);
+
 int circle_p_iter_init(struct circle_point_iter *self, struct point center, int radius);
+
 int bezier1_p_iter_init(struct bezier1_point_iter *self, struct point start, struct point end, struct point control);
 
 #endif

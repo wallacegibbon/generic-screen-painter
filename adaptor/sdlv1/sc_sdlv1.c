@@ -1,16 +1,16 @@
 #include "sc_sdlv1.h"
 #include "sc_painter.h"
-#include "sc_point_iterator.h"
-#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
 
 int sdlv1_draw_point(struct sdlv1_screen *self, struct point p, unsigned long color);
 int sdlv1_size(struct sdlv1_screen *self, struct point *p);
 int sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, unsigned long color);
 
 static struct drawing_i drawing_interface = {
-	.draw_point = (drawing_draw_point_fn)sdlv1_draw_point,
-	.size = (drawing_size_fn)sdlv1_size,
-	.fill = (drawing_fill_fn)sdlv1_fill,
+	.draw_point = (drawing_draw_point_fn_t)sdlv1_draw_point,
+	.size = (drawing_size_fn_t)sdlv1_size,
+	.fill = (drawing_fill_fn_t)sdlv1_fill,
 };
 
 int sdlv1_draw_point(struct sdlv1_screen *self, struct point p, unsigned long color)
@@ -38,7 +38,10 @@ int sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, unsi
 	rect.y = p1.y;
 	rect.w = p2.x - p1.x;
 	rect.h = p2.y - p1.y;
-	SDL_FillRect(self->surface, &rect, color);
+
+	if (SDL_FillRect(self->surface, &rect, color))
+		return 1;
+
 	return 0;
 }
 
@@ -48,5 +51,6 @@ int sdlv1_init(struct sdlv1_screen *self, SDL_Surface *surface, int w, int h)
 	self->surface = surface;
 	self->size.x = w;
 	self->size.y = h;
+
 	return 0;
 }

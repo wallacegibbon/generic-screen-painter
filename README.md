@@ -1,11 +1,4 @@
 ## Introduction
 
-### Demo projects for MCU:
+A generic screen driver layer written in pure and clean C for MCUs, SDL and other graphic libraries.
 
-- <https://github.com/wallacegibbon/screen-library-demo-ch32v>
-- <https://github.com/wallacegibbon/screen-library-demo-esp32>
-
-
-### Demo projects for SDL:
-
-- <https://github.com/wallacegibbon/screen-library-demo-sdlv1>

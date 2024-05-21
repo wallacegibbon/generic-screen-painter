@@ -27,11 +27,17 @@ struct ssd1306_screen {
 };
 
 int ssd1306_init(struct ssd1306_screen *self, struct ssd1306_adaptor_i **adaptor);
+
 int ssd1306_fix_32row(struct ssd1306_screen *self);
+
 int ssd1306_set_brightness(struct ssd1306_screen *self, int value);
+
 int ssd1306_set_up_down_invert(struct ssd1306_screen *self);
+
 int ssd1306_color_reverse(struct ssd1306_screen *self);
+
 int ssd1306_display_on(struct ssd1306_screen *self);
+
 int ssd1306_display_off(struct ssd1306_screen *self);
 
 #endif
