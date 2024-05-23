@@ -1,6 +1,7 @@
 #include "sc_st7735.h"
 #include "sc_color.h"
 #include "sc_painter.h"
+#include <stdarg.h>
 #include <string.h>
 
 int st7735_draw_point(struct st7735_screen *self, struct point p, unsigned long color);
@@ -13,45 +14,68 @@ static struct drawing_i drawing_interface = {
 	.fill = (drawing_fill_fn_t)st7735_fill,
 };
 
-static inline void st7735_write_data_16(struct st7735_screen *self, int data)
+static inline int st7735_write_data(struct st7735_screen *self, int data)
 {
-	(*self->adaptor)->write_data_16(self->adaptor, data);
+	return (*self->adaptor)->write_data(self->adaptor, data);
 }
 
-static inline void st7735_write_data(struct st7735_screen *self, int data)
+static inline int st7735_write_cmd(struct st7735_screen *self, int data)
 {
-	(*self->adaptor)->write_data(self->adaptor, data);
+	return (*self->adaptor)->write_cmd(self->adaptor, data);
 }
 
-static inline void st7735_write_cmd(struct st7735_screen *self, int data)
+static int st7735_write(struct st7735_screen *self, int cmd, int arg_cnt, ...)
 {
-	(*self->adaptor)->write_cmd(self->adaptor, data);
+	va_list args;
+	int i;
+
+	va_start(args, arg_cnt);
+
+	if (st7735_write_cmd(self, cmd))
+		return 1;
+	for (i = 0; i < arg_cnt; i++) {
+		if (st7735_write_data(self, va_arg(args, int)))
+			return 2;
+	}
+
+	va_end(args);
+	return 0;
 }
 
 int st7735_set_address(struct st7735_screen *self, struct point p1, struct point p2)
 {
+	int t1, t2;
+
+	t1 = p1.x + 1;
+	t2 = p2.x + 1;
 	/// column address settings
-	st7735_write_cmd(self, 0x2A);
-	st7735_write_data_16(self, p1.x + 1);
-	st7735_write_data_16(self, p2.x + 1);
+	if (st7735_write(self, 0x2A, 4, t1 >> 16, t1 & 0xFF, t2 >> 16, t2 & 0xFF))
+		return 1;
 
+	t1 = p1.y + 26;
+	t2 = p2.y + 26;
 	/// row address setting
-	st7735_write_cmd(self, 0x2B);
-	st7735_write_data_16(self, p1.y + 26);
-	st7735_write_data_16(self, p2.y + 26);
+	if (st7735_write(self, 0x2B, 4, t1 >> 16, t1 & 0xFF, t2 >> 16, t2 & 0xFF))
+		return 2;
 
-	/// memory write
-	st7735_write_cmd(self, 0x2C);
 	return 0;
 }
 
 int st7735_draw_point(struct st7735_screen *self, struct point p, unsigned long color)
 {
+	unsigned long fixed_color;
+
 	if (p.x >= self->size.x || p.y >= self->size.y)
 		return 1;
+	if (st7735_set_address(self, p, p))
+		return 2;
 
-	st7735_set_address(self, p, p);
-	st7735_write_data_16(self, color_to_16bit(color));
+	fixed_color = color_to_16bit(color);
+
+	/// memory write
+	if (st7735_write(self, 0x2C, 2, fixed_color >> 16, fixed_color & 0xFF))
+		return 3;
+
 	return 0;
 }
 
@@ -60,122 +84,92 @@ int st7735_size(struct st7735_screen *self, struct point *p)
 	return point_init(p, self->size.x, self->size.y);
 }
 
-/// The default `fill` calls `draw_point`, which will cause many
-/// unnecessary `set_address` invocations.
 int st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, unsigned long color)
 {
+	unsigned long fixed_color;
 	int n = ABS((p1.x - p2.x) * (p1.y - p2.y));
 
-	st7735_set_address(self, p1, p2);
-	while (n--)
-		st7735_write_data_16(self, color_to_16bit(color));
+	if (st7735_set_address(self, p1, p2))
+		return 1;
+	if (st7735_write(self, 0x2C, 0))
+		return 2;
+
+	fixed_color = color_to_16bit(color);
+
+	while (n--) {
+		if (st7735_write_data(self, fixed_color >> 16))
+			return 3;
+		if (st7735_write_data(self, fixed_color & 0xFF))
+			return 3;
+	}
+
 	return 0;
 }
 
 int st7735_prepare(struct st7735_screen *self)
 {
-	st7735_write_cmd(self, 0x11);
-	delay(100);
-
-	/// display inversion mode (0 is black, -1 is white)
-	st7735_write_cmd(self, 0x21);
+	/// Memory Data Access Control
+	if (st7735_write(self, 0x36, 1, 0x78))
+		return 1;
+	/// RGB565 (16-bit color)
+	if (st7735_write(self, 0x3A, 1, 0x05))
+		return 2;
 
 	/// Set the frame frequency of the full colors normal mode
-	st7735_write_cmd(self, 0xB1);
-	/// Frame rate=fosc/((RTNA x 2 + 40) x (LINE + FPA + BPA +2))
+	/// Frame rate = fosc / ((RTNA x 2 + 40) x (LINE + FPA + BPA + 2))
 	/// fosc = 850kHz
-	st7735_write_data(self, 0x05); // RTNA
-	st7735_write_data(self, 0x3A); // FPA
-	st7735_write_data(self, 0x3A); // BPA
+	if (st7735_write(self, 0xB1, 3, 0x05, 0x3A, 0x3A))
+		return 3;
 
 	/// Set the frame frequency of the Idle mode
-	st7735_write_cmd(self, 0xB2);
-	/// Frame rate=fosc/((RTNB x 2 + 40) x (LINE + FPB + BPB +2))
+	/// Frame rate = fosc / ((RTNB x 2 + 40) x (LINE + FPB + BPB + 2))
 	/// fosc = 850kHz
-	st7735_write_data(self, 0x05); // RTNB
-	st7735_write_data(self, 0x3A); // FPB
-	st7735_write_data(self, 0x3A); // BPB
+	if (st7735_write(self, 0xB2, 3, 0x05, 0x3A, 0x3A))
+		return 4;
 
 	/// Set the frame frequency of the Partial mode/ full colors
-	st7735_write_cmd(self, 0xB3);
-	st7735_write_data(self, 0x05);
-	st7735_write_data(self, 0x3A);
-	st7735_write_data(self, 0x3A);
-	st7735_write_data(self, 0x05);
-	st7735_write_data(self, 0x3A);
-	st7735_write_data(self, 0x3A);
+	if (st7735_write(self, 0xB3, 6, 0x05, 0x3A, 0x3A, 0x05, 0x3A, 0x3A))
+		return 5;
 
-	st7735_write_cmd(self, 0xB4);
-	st7735_write_data(self, 0x03);
+	if (st7735_write(self, 0xB4, 1, 0x03))
+		return 6;
+	if (st7735_write(self, 0xC0, 3, 0x62, 0x02, 0x04))
+		return 7;
+	if (st7735_write(self, 0xC1, 1, 0xC0))
+		return 8;
+	if (st7735_write(self, 0xC2, 2, 0x0D, 0x00))
+		return 9;
+	if (st7735_write(self, 0xC3, 2, 0x8D, 0x6A))
+		return 10;
+	if (st7735_write(self, 0xC4, 2, 0x8D, 0xEE))
+		return 11;
+	/// VCOM
+	if (st7735_write(self, 0xC5, 1, 0x0E))
+		return 12;
 
-	st7735_write_cmd(self, 0xC0);
-	st7735_write_data(self, 0x62);
-	st7735_write_data(self, 0x02);
-	st7735_write_data(self, 0x04);
+	/// Gamma (‘+’polarity) Correction Characteristics Setting
+	if (st7735_write(self, 0xE0, 16, 0x10, 0x0E, 0x02, 0x03, 0x0E, 0x07, 0x02, 0x07, 0x0A, 0x12, 0x27, 0x37, 0x00, 0x0D, 0x0E, 0x10))
+		return 13;
 
-	st7735_write_cmd(self, 0xC1);
-	st7735_write_data(self, 0xC0);
+	/// Gamma ‘-’polarity Correction Characteristics Setting
+	if (st7735_write(self, 0xE1, 16, 0x10, 0x0E, 0x03, 0x03, 0x0F, 0x06, 0x02, 0x08, 0x0A, 0x13, 0x26, 0x36, 0x00, 0x0D, 0x0E, 0x10))
+		return 14;
 
-	st7735_write_cmd(self, 0xC2);
-	st7735_write_data(self, 0x0D);
-	st7735_write_data(self, 0x00);
+	/// Display Inversion On
+	if (st7735_write(self, 0x21, 0))
+		return 15;
 
-	st7735_write_cmd(self, 0xC3);
-	st7735_write_data(self, 0x8D);
-	st7735_write_data(self, 0x6A);
+	/// Sleep Out
+	if (st7735_write(self, 0x11, 0))
+		return 16;
 
-	st7735_write_cmd(self, 0xC4);
-	st7735_write_data(self, 0x8D);
-	st7735_write_data(self, 0xEE);
+	/// wait for power stability
+	delay(100);
 
-	st7735_write_cmd(self, 0xC5);
-	st7735_write_data(self, 0x0E); /// VCOM
+	/// Display on
+	if (st7735_write(self, 0x29, 0))
+		return 17;
 
-	st7735_write_cmd(self, 0xE0);
-	st7735_write_data(self, 0x10);
-	st7735_write_data(self, 0x0E);
-	st7735_write_data(self, 0x02);
-	st7735_write_data(self, 0x03);
-	st7735_write_data(self, 0x0E);
-	st7735_write_data(self, 0x07);
-	st7735_write_data(self, 0x02);
-	st7735_write_data(self, 0x07);
-	st7735_write_data(self, 0x0A);
-	st7735_write_data(self, 0x12);
-	st7735_write_data(self, 0x27);
-	st7735_write_data(self, 0x37);
-	st7735_write_data(self, 0x00);
-	st7735_write_data(self, 0x0D);
-	st7735_write_data(self, 0x0E);
-	st7735_write_data(self, 0x10);
-
-	st7735_write_cmd(self, 0xE1);
-	st7735_write_data(self, 0x10);
-	st7735_write_data(self, 0x0E);
-	st7735_write_data(self, 0x03);
-	st7735_write_data(self, 0x03);
-	st7735_write_data(self, 0x0F);
-	st7735_write_data(self, 0x06);
-	st7735_write_data(self, 0x02);
-	st7735_write_data(self, 0x08);
-	st7735_write_data(self, 0x0A);
-	st7735_write_data(self, 0x13);
-	st7735_write_data(self, 0x26);
-	st7735_write_data(self, 0x36);
-	st7735_write_data(self, 0x00);
-	st7735_write_data(self, 0x0D);
-	st7735_write_data(self, 0x0E);
-	st7735_write_data(self, 0x10);
-
-	/// 16 bit color
-	st7735_write_cmd(self, 0x3A);
-	st7735_write_data(self, 0x05);
-
-	st7735_write_cmd(self, 0x36);
-	st7735_write_data(self, 0x78);
-
-	/// display on
-	st7735_write_cmd(self, 0x29);
 	return 0;
 }
 

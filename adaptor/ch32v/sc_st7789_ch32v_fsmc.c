@@ -3,31 +3,22 @@
 #include "ch32v30x_gpio.h"
 #include "sc_st7789.h"
 
-static int write_data_16(struct st7789_adaptor_ch32v_fsmc *self, int data);
 static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data);
 static int write_cmd(struct st7789_adaptor_ch32v_fsmc *self, int cmd);
 
 static struct st7789_adaptor_i adaptor_interface = {
-	.write_data_16 = (st7789_adaptor_write_data_16_fn_t)write_data_16,
 	.write_data = (st7789_adaptor_write_data_fn_t)write_data,
 	.write_cmd = (st7789_adaptor_write_cmd_fn_t)write_cmd,
 };
 
-static int write_data_16(struct st7789_adaptor_ch32v_fsmc *self, int data)
-{
-	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)(data >> 8);
-	*(volatile uint8_t *)ST7789_LCD_DATA = (uint8_t)data;
-	return 0;
-}
-
 static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data)
 {
-	return *(volatile uint8_t *)ST7789_LCD_DATA = data;
+	return *(volatile unsigned char *)ST7789_LCD_DATA = data;
 }
 
 static int write_cmd(struct st7789_adaptor_ch32v_fsmc *self, int cmd)
 {
-	return *(volatile uint8_t *)ST7789_LCD_CMD = cmd;
+	return *(volatile unsigned char *)ST7789_LCD_CMD = cmd;
 }
 
 int st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self)

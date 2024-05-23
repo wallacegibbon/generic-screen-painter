@@ -1,14 +1,12 @@
-#include "sc_st7735_esp32_softspi.h"
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
 #include "sc_common.h"
+#include "sc_st7735_esp32_softspi.h"
 
-static int write_data_16(struct st7735_adaptor_esp32_soft_spi *self, int data);
 static int write_data(struct st7735_adaptor_esp32_soft_spi *self, int data);
 static int write_cmd(struct st7735_adaptor_esp32_soft_spi *self, int data);
 
 static struct st7735_adaptor_i adaptor_interface = {
-	.write_data_16 = (st7735_adaptor_write_data_16_fn)write_data_16,
 	.write_data = (st7735_adaptor_write_data_fn)write_data,
 	.write_cmd = (st7735_adaptor_write_cmd_fn)write_cmd,
 };
@@ -16,22 +14,23 @@ static struct st7735_adaptor_i adaptor_interface = {
 static int write_byte(struct st7735_adaptor_esp32_soft_spi *self, int data)
 {
 	int i;
-	ESP_ERROR_CHECK(gpio_set_level(self->cs_pin, 0));
+
+	if (gpio_set_level(self->cs_pin, 0))
+		return 1;
+
 	for (i = 0; i < 8; i++) {
-		ESP_ERROR_CHECK(gpio_set_level(self->sclk_pin, 0));
-		ESP_ERROR_CHECK(gpio_set_level(self->mosi_pin, data & 0x80));
-		ESP_ERROR_CHECK(gpio_set_level(self->sclk_pin, 1));
+		if (gpio_set_level(self->sclk_pin, 0))
+			return 2;
+		if (gpio_set_level(self->mosi_pin, data & 0x80))
+			return 2;
+		if (gpio_set_level(self->sclk_pin, 1))
+			return 2;
 		data <<= 1;
 	}
-	ESP_ERROR_CHECK(gpio_set_level(self->cs_pin, 1));
-	return 0;
-}
 
-static int write_data_16(struct st7735_adaptor_esp32_soft_spi *self, int data)
-{
-	ESP_ERROR_CHECK(gpio_set_level(self->dc_pin, 1));
-	write_byte(self, data >> 8);
-	write_byte(self, data);
+	if (gpio_set_level(self->cs_pin, 1))
+		return 3;
+
 	return 0;
 }
 

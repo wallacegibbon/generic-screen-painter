@@ -4,12 +4,10 @@
 #include "sc_common.h"
 #include "sc_painter.h"
 
-typedef int (*st7789_adaptor_write_data_16_fn_t)(void *adaptor, int data);
 typedef int (*st7789_adaptor_write_data_fn_t)(void *adaptor, int data);
 typedef int (*st7789_adaptor_write_cmd_fn_t)(void *adaptor, int data);
 
 struct st7789_adaptor_i {
-	st7789_adaptor_write_data_16_fn_t write_data_16;
 	st7789_adaptor_write_data_fn_t write_data;
 	st7789_adaptor_write_cmd_fn_t write_cmd;
 };
