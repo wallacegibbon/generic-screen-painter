@@ -34,6 +34,7 @@ int sdlv1_size(struct sdlv1_screen *self, struct point *p)
 int sdlv1_fill(struct sdlv1_screen *self, struct point p1, struct point p2, unsigned long color)
 {
 	SDL_Rect rect;
+
 	rect.x = p1.x;
 	rect.y = p1.y;
 	rect.w = p2.x - p1.x;

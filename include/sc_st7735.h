@@ -5,9 +5,7 @@
 #include "sc_painter.h"
 
 typedef int (*st7735_adaptor_write_data_16_fn_t)(void *adaptor, int data);
-
 typedef int (*st7735_adaptor_write_data_fn_t)(void *adaptor, int data);
-
 typedef int (*st7735_adaptor_write_cmd_fn_t)(void *adaptor, int data);
 
 struct st7735_adaptor_i {

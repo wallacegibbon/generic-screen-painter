@@ -18,7 +18,7 @@ static int dawing_board_fill_fallback(void *screen, struct point p1, struct poin
 	return 0;
 }
 
-int painter_draw_point(struct painter *self, struct point p, unsigned long color)
+int sc_painter_draw_point(struct sc_painter *self, struct point p, unsigned long color)
 {
 	drawing_draw_point_fn_t fn;
 
@@ -29,7 +29,7 @@ int painter_draw_point(struct painter *self, struct point p, unsigned long color
 		return -2;
 }
 
-int painter_size(struct painter *self, struct point *p)
+int sc_painter_size(struct sc_painter *self, struct point *p)
 {
 	drawing_size_fn_t fn;
 
@@ -40,7 +40,7 @@ int painter_size(struct painter *self, struct point *p)
 		return -2;
 }
 
-int painter_fill(struct painter *self, struct point p1, struct point p2, unsigned long color)
+int painter_fill(struct sc_painter *self, struct point p1, struct point p2, unsigned long color)
 {
 	drawing_fill_fn_t fn;
 
@@ -51,13 +51,13 @@ int painter_fill(struct painter *self, struct point p1, struct point p2, unsigne
 		return dawing_board_fill_fallback(self->drawing_board, p1, p2, color);
 }
 
-int painter_fill_whole(struct painter *self, unsigned long color)
+int painter_fill_whole(struct sc_painter *self, unsigned long color)
 {
 	struct point p1, p2;
 
 	if (point_init(&p1, 0, 0))
 		return 1;
-	if (painter_size(self, &p2))
+	if (sc_painter_size(self, &p2))
 		return 2;
 	if (painter_fill(self, p1, p2, color))
 		return 3;
@@ -65,7 +65,7 @@ int painter_fill_whole(struct painter *self, unsigned long color)
 	return 0;
 }
 
-int painter_clear(struct painter *self, unsigned long color)
+int sc_painter_clear(struct sc_painter *self, unsigned long color)
 {
 	drawing_clear_fn_t fn;
 
@@ -76,7 +76,7 @@ int painter_clear(struct painter *self, unsigned long color)
 		return painter_fill_whole(self, color);
 }
 
-int painter_flush(struct painter *self)
+int sc_painter_flush(struct sc_painter *self)
 {
 	drawing_flush_fn_t fn;
 
@@ -87,7 +87,13 @@ int painter_flush(struct painter *self)
 		return 0;
 }
 
-int painter_draw_line(struct painter *self, struct point p1, struct point p2, unsigned long color)
+int sc_painter_init(struct sc_painter *self, struct drawing_i **drawing_board)
+{
+	self->drawing_board = drawing_board;
+	return 0;
+}
+
+int sc_painter_draw_line(struct sc_painter *self, struct point p1, struct point p2, unsigned long color)
 {
 	struct line_point_iter point_iterator;
 	struct point p;
@@ -95,28 +101,28 @@ int painter_draw_line(struct painter *self, struct point p1, struct point p2, un
 	if (line_p_iter_init(&point_iterator, p1, p2))
 		return 1;
 	while (!point_iter_next(&point_iterator, &p)) {
-		if (painter_draw_point(self, p, color))
+		if (sc_painter_draw_point(self, p, color))
 			return 2;
 	}
 
 	return 0;
 }
 
-int painter_draw_rectangle(struct painter *self, struct point p1, struct point p2, unsigned long color)
+int sc_painter_draw_rectangle(struct sc_painter *self, struct point p1, struct point p2, unsigned long color)
 {
 	struct point tmp;
 
 	point_init(&tmp, p2.x, p1.y);
-	painter_draw_line(self, p1, tmp, color);
-	painter_draw_line(self, tmp, p2, color);
+	sc_painter_draw_line(self, p1, tmp, color);
+	sc_painter_draw_line(self, tmp, p2, color);
 
 	point_init(&tmp, p1.x, p2.y);
-	painter_draw_line(self, p2, tmp, color);
-	painter_draw_line(self, tmp, p1, color);
+	sc_painter_draw_line(self, p2, tmp, color);
+	sc_painter_draw_line(self, tmp, p1, color);
 	return 0;
 }
 
-int painter_draw_circle(struct painter *self, struct point p, int radius, unsigned long color)
+int sc_painter_draw_circle(struct sc_painter *self, struct point p, int radius, unsigned long color)
 {
 	struct circle_point_iter point_iterator;
 	struct point buffer[8];
@@ -126,14 +132,14 @@ int painter_draw_circle(struct painter *self, struct point p, int radius, unsign
 		return 1;
 	while (!point_iter_next(&point_iterator, buffer)) {
 		for (i = 0; i < 8; i++) {
-			if (painter_draw_point(self, buffer[i], color))
+			if (sc_painter_draw_point(self, buffer[i], color))
 				return 2;
 		}
 	}
 	return 0;
 }
 
-int painter_draw_bezier(struct painter *self, struct point start, struct point end, struct point control, unsigned long color)
+int sc_painter_draw_bezier(struct sc_painter *self, struct point start, struct point end, struct point control, unsigned long color)
 {
 	struct bezier1_point_iter point_iterator;
 	struct point p;
@@ -146,20 +152,20 @@ int painter_draw_bezier(struct painter *self, struct point start, struct point e
 	if (bezier1_p_iter_init(&point_iterator, start, end, control))
 		return 1;
 	while (!point_iter_next(&point_iterator, &p)) {
-		if (painter_draw_point(self, p, color))
+		if (sc_painter_draw_point(self, p, color))
 			return 2;
 	}
 
 	return 0;
 }
 
-int text_painter_init(struct text_painter *self, struct painter *painter)
+int sc_text_painter_init(struct sc_text_painter *self, struct sc_painter *painter)
 {
 	self->painter = painter;
 	return 0;
 }
 
-static void draw_char_byte(struct text_painter *self, unsigned char byte, struct point pos)
+static void draw_char_byte(struct sc_text_painter *self, unsigned char byte, struct point pos)
 {
 	struct point p;
 
@@ -167,12 +173,12 @@ static void draw_char_byte(struct text_painter *self, unsigned char byte, struct
 	for (i = 0; i < 8; i++) {
 		c = byte & 0x80 ? self->color.foreground : self->color.background;
 		point_init(&p, pos.x + i, pos.y);
-		painter_draw_point(self->painter, p, c);
+		sc_painter_draw_point(self->painter, p, c);
 		byte <<= 1;
 	}
 }
 
-static int draw_char_16(struct text_painter *self, int idx, struct point pos)
+static int draw_char_16(struct sc_text_painter *self, int idx, struct point pos)
 {
 	const unsigned char *buffer;
 	struct point p;
@@ -186,7 +192,7 @@ static int draw_char_16(struct text_painter *self, int idx, struct point pos)
 	return 1;
 }
 
-static int draw_char_32(struct text_painter *self, int idx, struct point pos)
+static int draw_char_32(struct sc_text_painter *self, int idx, struct point pos)
 {
 	const uint16_t *buffer;
 	struct point p;
@@ -203,7 +209,7 @@ static int draw_char_32(struct text_painter *self, int idx, struct point pos)
 	return 1;
 }
 
-int text_draw_char(struct text_painter *self, char ch, int size, struct point p)
+int sc_text_draw_char(struct sc_text_painter *self, char ch, int size, struct point p)
 {
 	int idx = ch - ' ';
 	if (size == 32)
@@ -214,7 +220,7 @@ int text_draw_char(struct text_painter *self, char ch, int size, struct point p)
 	return 0;
 }
 
-int text_draw_string(struct text_painter *self, char *str, int size)
+int sc_text_draw_string(struct sc_text_painter *self, char *str, int size)
 {
 	int padding, char_width, c, cnt;
 	struct point p;
@@ -226,7 +232,7 @@ int text_draw_string(struct text_painter *self, char *str, int size)
 	point_init(&p, self->pos.x, self->pos.y);
 
 	for (c = *str, cnt = 0; c; p.x += char_width + padding, c = *++str)
-		cnt += text_draw_char(self, c, size, p);
+		cnt += sc_text_draw_char(self, c, size, p);
 
 	return cnt;
 }
