@@ -1,15 +1,28 @@
 #include "sc_st7789_ch32v_fsmc.h"
 #include "ch32v30x_fsmc.h"
 #include "ch32v30x_gpio.h"
-#include "sc_st7789.h"
 
+static int start_transmit(struct st7789_adaptor_ch32v_fsmc *self);
+static int stop_transmit(struct st7789_adaptor_ch32v_fsmc *self);
 static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data);
 static int write_cmd(struct st7789_adaptor_ch32v_fsmc *self, int cmd);
 
-static struct st7789_adaptor_i adaptor_interface = {
-	.write_data = (st7789_adaptor_write_data_fn_t)write_data,
-	.write_cmd = (st7789_adaptor_write_cmd_fn_t)write_cmd,
+static struct sc_adaptor_i adaptor_interface = {
+	.start_transmit = (sc_adaptor_start_transmit_fn_t)start_transmit,
+	.stop_transmit = (sc_adaptor_stop_transmit_fn_t)stop_transmit,
+	.write_data = (sc_adaptor_write_data_fn_t)write_data,
+	.write_cmd = (sc_adaptor_write_cmd_fn_t)write_cmd,
 };
+
+static int start_transmit(struct st7789_adaptor_ch32v_fsmc *self)
+{
+	return 0;
+}
+
+static int stop_transmit(struct st7789_adaptor_ch32v_fsmc *self)
+{
+	return 0;
+}
 
 static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data)
 {

@@ -1,4 +1,5 @@
 #include "sc_st7735.h"
+#include "sc_adaptor.h"
 #include "sc_color.h"
 #include "sc_painter.h"
 #include <stdarg.h>
@@ -14,16 +15,6 @@ static struct drawing_i drawing_interface = {
 	.fill = (drawing_fill_fn_t)st7735_fill,
 };
 
-static inline int st7735_write_data(struct st7735_screen *self, int data)
-{
-	return (*self->adaptor)->write_data(self->adaptor, data);
-}
-
-static inline int st7735_write_cmd(struct st7735_screen *self, int data)
-{
-	return (*self->adaptor)->write_cmd(self->adaptor, data);
-}
-
 static int st7735_write(struct st7735_screen *self, int cmd, int arg_cnt, ...)
 {
 	va_list args;
@@ -31,10 +22,10 @@ static int st7735_write(struct st7735_screen *self, int cmd, int arg_cnt, ...)
 
 	va_start(args, arg_cnt);
 
-	if (st7735_write_cmd(self, cmd))
+	if (sc_adaptor_write_cmd(self->adaptor, cmd))
 		return 1;
 	for (i = 0; i < arg_cnt; i++) {
-		if (st7735_write_data(self, va_arg(args, int)))
+		if (sc_adaptor_write_data(self->adaptor, va_arg(args, int)))
 			return 2;
 	}
 
@@ -67,14 +58,21 @@ int st7735_draw_point(struct st7735_screen *self, struct point p, unsigned long 
 
 	if (p.x >= self->size.x || p.y >= self->size.y)
 		return 1;
+
+	if (sc_adaptor_start_transmit(self->adaptor))
+		return 0xFE;
+
 	if (st7735_set_address(self, p, p))
-		return 2;
+		return 3;
 
 	fixed_color = color_to_16bit(color);
 
 	/// memory write
 	if (st7735_write(self, 0x2C, 2, fixed_color >> 16, fixed_color & 0xFF))
-		return 3;
+		return 4;
+
+	if (sc_adaptor_stop_transmit(self->adaptor))
+		return 0xFF;
 
 	return 0;
 }
@@ -89,25 +87,34 @@ int st7735_fill(struct st7735_screen *self, struct point p1, struct point p2, un
 	unsigned long fixed_color;
 	int n = ABS((p1.x - p2.x) * (p1.y - p2.y));
 
+	if (sc_adaptor_start_transmit(self->adaptor))
+		return 0xFE;
+
 	if (st7735_set_address(self, p1, p2))
-		return 1;
-	if (st7735_write(self, 0x2C, 0))
 		return 2;
+	if (st7735_write(self, 0x2C, 0))
+		return 3;
 
 	fixed_color = color_to_16bit(color);
 
 	while (n--) {
-		if (st7735_write_data(self, fixed_color >> 16))
-			return 3;
-		if (st7735_write_data(self, fixed_color & 0xFF))
-			return 3;
+		if (sc_adaptor_write_data(self->adaptor, fixed_color >> 16))
+			return 4;
+		if (sc_adaptor_write_data(self->adaptor, fixed_color & 0xFF))
+			return 4;
 	}
+
+	if (sc_adaptor_stop_transmit(self->adaptor))
+		return 0xFF;
 
 	return 0;
 }
 
 int st7735_prepare(struct st7735_screen *self)
 {
+	if (sc_adaptor_start_transmit(self->adaptor))
+		return 0xFE;
+
 	/// Memory Data Access Control
 	if (st7735_write(self, 0x36, 1, 0x78))
 		return 1;
@@ -170,10 +177,13 @@ int st7735_prepare(struct st7735_screen *self)
 	if (st7735_write(self, 0x29, 0))
 		return 17;
 
+	if (sc_adaptor_stop_transmit(self->adaptor))
+		return 0xFF;
+
 	return 0;
 }
 
-int st7735_init(struct st7735_screen *self, struct st7735_adaptor_i **adaptor)
+int st7735_init(struct st7735_screen *self, struct sc_adaptor_i **adaptor)
 {
 	memset(self, 0, sizeof(struct st7735_screen));
 
