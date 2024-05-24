@@ -1,16 +1,15 @@
 #include "sc_ssd1306_ch32v_i2c.h"
 #include "sc_ch32v_i2c.h"
 #include "sc_common.h"
-#include "sc_ssd1306.h"
 
 static int start_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
 static int stop_transmit(struct ssd1306_adaptor_ch32v_i2c *self);
 static int write_byte(struct ssd1306_adaptor_ch32v_i2c *self, int data);
 
-static struct ssd1306_adaptor_i adaptor_interface = {
-	.start_transmit = (ssd1306_adaptor_start_transmit_fn_t)start_transmit,
-	.stop_transmit = (ssd1306_adaptor_stop_transmit_fn_t)stop_transmit,
-	.write_byte = (ssd1306_adaptor_write_byte_fn_t)write_byte,
+static struct sc_adaptor_i2c_i adaptor_interface = {
+	.start_transmit = (sc_adaptor_start_transmit_fn_t)start_transmit,
+	.stop_transmit = (sc_adaptor_stop_transmit_fn_t)stop_transmit,
+	.write_byte = (sc_adaptor_write_byte_fn_t)write_byte,
 };
 
 static int start_transmit(struct ssd1306_adaptor_ch32v_i2c *self)
