@@ -1,5 +1,6 @@
 #include "sc_st7789.h"
 #include "sc_color.h"
+#include "sc_common.h"
 #include "sc_painter.h"
 #include <string.h>
 
@@ -161,15 +162,14 @@ int st7789_prepare(struct st7789_screen *self)
 	return 0;
 }
 
-int st7789_init(struct st7789_screen *self, struct sc_adaptor_i **adaptor)
+int st7789_init(struct st7789_screen *self, struct sc_adaptor_i **adaptor, struct point size)
 {
 	memset(self, 0, sizeof(struct st7789_screen));
 
 	self->drawing_board = &drawing_interface;
 	self->adaptor = adaptor;
 
-	self->size.x = 240;
-	self->size.y = 240;
+	self->size = size;
 
 	if (st7789_prepare(self))
 		return 1;
