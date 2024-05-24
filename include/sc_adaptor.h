@@ -16,6 +16,8 @@ struct sc_adaptor_i {
 	sc_adaptor_write_cmd_fn_t write_cmd;
 };
 
+int sc_adaptor_write_cmd_and_args(struct sc_adaptor_i **self, int cmd, int arg_cnt, ...);
+
 static inline int sc_adaptor_start_transmit(void *self)
 {
 	return (*(struct sc_adaptor_i **)self)->start_transmit(self);
