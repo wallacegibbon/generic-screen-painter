@@ -1,11 +1,11 @@
-#include "sc_st7789_ch32v_fsmc.h"
+#include "sc_adaptor_ch32v_fsmc.h"
 #include "ch32v30x_fsmc.h"
 #include "ch32v30x_gpio.h"
 
-static int start_transmit(struct st7789_adaptor_ch32v_fsmc *self);
-static int stop_transmit(struct st7789_adaptor_ch32v_fsmc *self);
-static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data);
-static int write_cmd(struct st7789_adaptor_ch32v_fsmc *self, int cmd);
+static int start_transmit(struct sc_adaptor_ch32v_fsmc *self);
+static int stop_transmit(struct sc_adaptor_ch32v_fsmc *self);
+static int write_data(struct sc_adaptor_ch32v_fsmc *self, int data);
+static int write_cmd(struct sc_adaptor_ch32v_fsmc *self, int cmd);
 
 static struct sc_adaptor_i adaptor_interface = {
 	.start_transmit = (sc_adaptor_start_transmit_fn_t)start_transmit,
@@ -14,27 +14,27 @@ static struct sc_adaptor_i adaptor_interface = {
 	.write_cmd = (sc_adaptor_write_cmd_fn_t)write_cmd,
 };
 
-static int start_transmit(struct st7789_adaptor_ch32v_fsmc *self)
+static int start_transmit(struct sc_adaptor_ch32v_fsmc *self)
 {
 	return 0;
 }
 
-static int stop_transmit(struct st7789_adaptor_ch32v_fsmc *self)
+static int stop_transmit(struct sc_adaptor_ch32v_fsmc *self)
 {
 	return 0;
 }
 
-static int write_data(struct st7789_adaptor_ch32v_fsmc *self, int data)
+static int write_data(struct sc_adaptor_ch32v_fsmc *self, int data)
 {
 	return *(volatile unsigned char *)ST7789_LCD_DATA = data;
 }
 
-static int write_cmd(struct st7789_adaptor_ch32v_fsmc *self, int cmd)
+static int write_cmd(struct sc_adaptor_ch32v_fsmc *self, int cmd)
 {
 	return *(volatile unsigned char *)ST7789_LCD_CMD = cmd;
 }
 
-int st7789_adaptor_ch32v_fsmc_init(struct st7789_adaptor_ch32v_fsmc *self)
+int sc_adaptor_ch32v_fsmc_init(struct sc_adaptor_ch32v_fsmc *self)
 {
 	GPIO_InitTypeDef gpio_init = {0};
 	FSMC_NORSRAMInitTypeDef fsmc_init = {0};

@@ -164,15 +164,14 @@ int st7735_prepare(struct st7735_screen *self)
 	return 0;
 }
 
-int st7735_init(struct st7735_screen *self, struct sc_adaptor_i **adaptor)
+int st7735_init(struct st7735_screen *self, struct sc_adaptor_i **adaptor, struct point size)
 {
 	memset(self, 0, sizeof(struct st7735_screen));
 
 	self->drawing_board = &drawing_interface;
 	self->adaptor = adaptor;
 
-	self->size.x = 160;
-	self->size.y = 80;
+	self->size = size;
 
 	if (st7735_prepare(self))
 		return 1;

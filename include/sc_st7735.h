@@ -11,7 +11,7 @@ struct st7735_screen {
 	struct point size;
 };
 
-int st7735_init(struct st7735_screen *self, struct sc_adaptor_i **adaptor);
+int st7735_init(struct st7735_screen *self, struct sc_adaptor_i **adaptor, struct point size);
 
 int st7735_set_address(struct st7735_screen *self, struct point p1, struct point p2);
 
