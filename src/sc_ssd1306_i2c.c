@@ -323,7 +323,7 @@ int ssd1306_set_up_down_invert(struct ssd1306_i2c_screen *self)
 	return 0;
 }
 
-int ssd1306_init(struct ssd1306_i2c_screen *self, struct sc_adaptor_i2c_i **adaptor)
+int ssd1306_init(struct ssd1306_i2c_screen *self, struct sc_byte_adaptor_i **adaptor)
 {
 	memset(self, 0, sizeof(struct ssd1306_i2c_screen));
 

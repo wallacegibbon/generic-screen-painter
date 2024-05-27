@@ -1,13 +1,11 @@
-#include "sc_adaptor_i2c_esp32.h"
+#include "sc_byte_adaptor_esp32.h"
 #include "esp_log.h"
-#include "sc_adaptor.h"
-#include "sc_ssd1306.h"
 
 static int start_transmit(struct sc_adaptor_i2c_esp32 *self);
 static int stop_transmit(struct sc_adaptor_i2c_esp32 *self);
 static int write_byte(struct sc_adaptor_i2c_esp32 *self, int data);
 
-static struct sc_adaptor_i2c_i adaptor_interface = {
+static struct sc_byte_adaptor_i adaptor_interface = {
 	.start_transmit = (sc_adaptor_start_transmit_fn_t)start_transmit,
 	.stop_transmit = (sc_adaptor_stop_transmit_fn_t)stop_transmit,
 	.write_byte = (sc_adaptor_write_byte_fn_t)write_byte,
@@ -40,7 +38,7 @@ static int write_byte(struct sc_adaptor_i2c_esp32 *self, int data)
 	return 0;
 }
 
-int sc_adaptor_i2c_esp32_init(struct sc_adaptor_i2c_esp32 *self, int address, i2c_port_t i2c_num)
+int sc_byte_adaptor_esp32_init(struct sc_adaptor_i2c_esp32 *self, int address, i2c_port_t i2c_num)
 {
 	i2c_config_t config;
 

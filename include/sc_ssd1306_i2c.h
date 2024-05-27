@@ -6,7 +6,7 @@
 
 struct ssd1306_i2c_screen {
 	struct drawing_i *drawing_board;
-	struct sc_adaptor_i2c_i **adaptor;
+	struct sc_byte_adaptor_i **adaptor;
 	struct point size;
 	/// just to hold some value since we don't have closure in C.
 	unsigned long clear_color;
@@ -17,7 +17,7 @@ struct ssd1306_i2c_screen {
 	unsigned char buffer[128][8];
 };
 
-int ssd1306_init(struct ssd1306_i2c_screen *self, struct sc_adaptor_i2c_i **adaptor);
+int ssd1306_init(struct ssd1306_i2c_screen *self, struct sc_byte_adaptor_i **adaptor);
 
 int ssd1306_fix_32row(struct ssd1306_i2c_screen *self);
 
