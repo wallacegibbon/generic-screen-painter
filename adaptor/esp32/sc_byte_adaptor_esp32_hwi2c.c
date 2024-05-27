@@ -1,9 +1,9 @@
-#include "sc_byte_adaptor_esp32.h"
+#include "sc_byte_adaptor_esp32_hwi2c.h"
 #include "esp_log.h"
 
-static int start_transmit(struct sc_adaptor_i2c_esp32 *self);
-static int stop_transmit(struct sc_adaptor_i2c_esp32 *self);
-static int write_byte(struct sc_adaptor_i2c_esp32 *self, int data);
+static int start_transmit(struct sc_byte_adaptor_esp32_hwi2c *self);
+static int stop_transmit(struct sc_byte_adaptor_esp32_hwi2c *self);
+static int write_byte(struct sc_byte_adaptor_esp32_hwi2c *self, int data);
 
 static struct sc_byte_adaptor_i adaptor_interface = {
 	.start_transmit = (sc_adaptor_start_transmit_fn_t)start_transmit,
@@ -11,7 +11,7 @@ static struct sc_byte_adaptor_i adaptor_interface = {
 	.write_byte = (sc_adaptor_write_byte_fn_t)write_byte,
 };
 
-static int start_transmit(struct sc_adaptor_i2c_esp32 *self)
+static int start_transmit(struct sc_byte_adaptor_esp32_hwi2c *self)
 {
 	self->cmd_handle = i2c_cmd_link_create();
 	if (i2c_master_start(self->cmd_handle))
@@ -21,7 +21,7 @@ static int start_transmit(struct sc_adaptor_i2c_esp32 *self)
 	return 0;
 }
 
-static int stop_transmit(struct sc_adaptor_i2c_esp32 *self)
+static int stop_transmit(struct sc_byte_adaptor_esp32_hwi2c *self)
 {
 	if (i2c_master_stop(self->cmd_handle))
 		return 1;
@@ -31,14 +31,14 @@ static int stop_transmit(struct sc_adaptor_i2c_esp32 *self)
 	return 0;
 }
 
-static int write_byte(struct sc_adaptor_i2c_esp32 *self, int data)
+static int write_byte(struct sc_byte_adaptor_esp32_hwi2c *self, int data)
 {
 	if (i2c_master_write_byte(self->cmd_handle, data, true))
 		return 1;
 	return 0;
 }
 
-int sc_byte_adaptor_esp32_init(struct sc_adaptor_i2c_esp32 *self, int address, i2c_port_t i2c_num)
+int sc_byte_adaptor_esp32_i2c_init(struct sc_byte_adaptor_esp32_hwi2c *self, int address, i2c_port_t i2c_num)
 {
 	i2c_config_t config;
 

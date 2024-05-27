@@ -1,10 +1,10 @@
-#include "sc_byte_adaptor_ch32v.h"
+#include "sc_byte_adaptor_ch32v_hwi2c.h"
 #include "sc_ch32v_i2c.h"
 #include "sc_common.h"
 
-static int start_transmit(struct sc_byte_adaptor_ch32v *self);
-static int stop_transmit(struct sc_byte_adaptor_ch32v *self);
-static int write_byte(struct sc_byte_adaptor_ch32v *self, int data);
+static int start_transmit(struct sc_byte_adaptor_ch32v_hwi2c *self);
+static int stop_transmit(struct sc_byte_adaptor_ch32v_hwi2c *self);
+static int write_byte(struct sc_byte_adaptor_ch32v_hwi2c *self, int data);
 
 static struct sc_byte_adaptor_i adaptor_interface = {
 	.start_transmit = (sc_adaptor_start_transmit_fn_t)start_transmit,
@@ -12,7 +12,7 @@ static struct sc_byte_adaptor_i adaptor_interface = {
 	.write_byte = (sc_adaptor_write_byte_fn_t)write_byte,
 };
 
-static int start_transmit(struct sc_byte_adaptor_ch32v *self)
+static int start_transmit(struct sc_byte_adaptor_ch32v_hwi2c *self)
 {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_BUSY) != RESET)
 		;
@@ -28,7 +28,7 @@ static int start_transmit(struct sc_byte_adaptor_ch32v *self)
 	return 0;
 }
 
-static int stop_transmit(struct sc_byte_adaptor_ch32v *self)
+static int stop_transmit(struct sc_byte_adaptor_ch32v_hwi2c *self)
 {
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED))
 		;
@@ -36,7 +36,7 @@ static int stop_transmit(struct sc_byte_adaptor_ch32v *self)
 	return 0;
 }
 
-static int write_byte(struct sc_byte_adaptor_ch32v *self, int data)
+static int write_byte(struct sc_byte_adaptor_ch32v_hwi2c *self, int data)
 {
 	while (I2C_GetFlagStatus(I2C1, I2C_FLAG_TXE) == RESET)
 		;
@@ -44,7 +44,7 @@ static int write_byte(struct sc_byte_adaptor_ch32v *self, int data)
 	return 0;
 }
 
-int sc_byte_adaptor_ch32v_init(struct sc_byte_adaptor_ch32v *self, int address)
+int sc_byte_adaptor_ch32v_hwi2c_init(struct sc_byte_adaptor_ch32v_hwi2c *self, int address)
 {
 	GPIO_InitTypeDef gpio_init = {0};
 	I2C_InitTypeDef i2c_init = {0};
